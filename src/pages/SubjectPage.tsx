@@ -3,13 +3,15 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getModuleSubject, getModule } from "@/data/curriculumData";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  ArrowLeft, Play, Zap, Settings2, Target, BookOpen, Clock, AlertTriangle
+  ArrowLeft, Play, Zap, Settings2, Target, BookOpen, Clock, AlertTriangle, Timer
 } from "lucide-react";
 
 type PracticeType = "learning" | "timed" | "custom";
 type Difficulty = "easy" | "medium" | "hard" | "mixed";
+type TimedQuestionCount = 10 | 20 | 50 | "custom";
+type TimeLimitMode = "auto" | "custom";
 
 const SubjectPage = () => {
   const { yearSlug, moduleSlug, subjectSlug } = useParams();
@@ -25,6 +27,18 @@ const SubjectPage = () => {
   const [randomize, setRandomize] = useState(true);
   const [showExplanations, setShowExplanations] = useState(true);
   const [showAdvanced, setShowAdvanced] = useState(false);
+
+  // Timed mode settings
+  const [timedQuestionCount, setTimedQuestionCount] = useState<TimedQuestionCount>(10);
+  const [timedCustomCount, setTimedCustomCount] = useState(20);
+  const [timeLimitMode, setTimeLimitMode] = useState<TimeLimitMode>("auto");
+  const [customTimeLimit, setCustomTimeLimit] = useState(15);
+  const [showResultsAfterExam, setShowResultsAfterExam] = useState(true);
+  const [allowMarking, setAllowMarking] = useState(true);
+  const [lockPreviousQuestions, setLockPreviousQuestions] = useState(false);
+
+  const actualTimedCount = timedQuestionCount === "custom" ? timedCustomCount : timedQuestionCount;
+  const estimatedTime = timeLimitMode === "auto" ? actualTimedCount : customTimeLimit;
 
   const allSelected = selectedTopics.length === topics.length && topics.length > 0;
 
@@ -51,10 +65,22 @@ const SubjectPage = () => {
   const startSession = () => {
     const params = new URLSearchParams();
     if (selectedTopics.length > 0) params.set("topics", selectedTopics.join(","));
-    params.set("mode", practiceType === "timed" ? "timed" : "practice");
-    if (practiceType === "custom") params.set("count", String(customCount));
+
+    if (practiceType === "timed") {
+      params.set("mode", "timed");
+      params.set("count", String(actualTimedCount));
+      params.set("timeLimit", String(estimatedTime));
+      if (!showResultsAfterExam) params.set("explanations", "false");
+      if (!allowMarking) params.set("allowMarking", "false");
+      if (lockPreviousQuestions) params.set("lockPrev", "true");
+      params.set("examMode", "true");
+    } else {
+      params.set("mode", "practice");
+      if (practiceType === "custom") params.set("count", String(customCount));
+      if (!showExplanations) params.set("explanations", "false");
+    }
+
     if (randomize) params.set("randomize", "true");
-    if (!showExplanations) params.set("explanations", "false");
     if (difficulty !== "mixed") params.set("difficulty", difficulty);
     navigate(`${basePath}/session?${params.toString()}`);
   };
@@ -76,6 +102,13 @@ const SubjectPage = () => {
   if (!subject || !mod) {
     return <div className="p-6 text-center text-muted-foreground">Subject not found.</div>;
   }
+
+  const questionCountOptions: { value: TimedQuestionCount; label: string }[] = [
+    { value: 10, label: "10" },
+    { value: 20, label: "20" },
+    { value: 50, label: "50" },
+    { value: "custom", label: "Custom" },
+  ];
 
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-6">
@@ -233,6 +266,160 @@ const SubjectPage = () => {
             );
           })}
         </div>
+
+        {/* Timed Mode Settings */}
+        <AnimatePresence>
+          {practiceType === "timed" && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="mt-4 p-4 rounded-lg border border-primary/20 bg-primary/5 space-y-5">
+                <div className="flex items-center gap-2 mb-1">
+                  <Timer className="w-4 h-4 text-primary" />
+                  <h3 className="text-sm font-semibold text-foreground">Timed Practice Settings</h3>
+                </div>
+
+                {/* Question Count */}
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">
+                    Questions
+                  </label>
+                  <div className="flex gap-2">
+                    {questionCountOptions.map(opt => (
+                      <button
+                        key={String(opt.value)}
+                        onClick={() => setTimedQuestionCount(opt.value)}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          timedQuestionCount === opt.value
+                            ? "gradient-orange text-primary-foreground"
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                  {timedQuestionCount === "custom" && (
+                    <div className="mt-2 flex items-center gap-3">
+                      <input
+                        type="number"
+                        min={5}
+                        max={100}
+                        value={timedCustomCount}
+                        onChange={e => setTimedCustomCount(Number(e.target.value))}
+                        className="w-24 px-3 py-1.5 rounded-lg bg-muted border border-border text-sm text-foreground"
+                      />
+                      <span className="text-xs text-muted-foreground">questions</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Time Limit */}
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">
+                    Time Limit
+                  </label>
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => setTimeLimitMode("auto")}
+                      className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors ${
+                        timeLimitMode === "auto"
+                          ? "bg-primary/10 border border-primary/20"
+                          : "bg-secondary/50 hover:bg-secondary border border-transparent"
+                      }`}
+                    >
+                      <div className={`w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center ${
+                        timeLimitMode === "auto" ? "border-primary" : "border-muted-foreground/40"
+                      }`}>
+                        {timeLimitMode === "auto" && <div className="w-2 h-2 rounded-full bg-primary" />}
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium text-foreground">Auto</span>
+                        <p className="text-xs text-muted-foreground">
+                          1 min per question · {actualTimedCount} questions → {actualTimedCount} minutes
+                        </p>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => setTimeLimitMode("custom")}
+                      className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors ${
+                        timeLimitMode === "custom"
+                          ? "bg-primary/10 border border-primary/20"
+                          : "bg-secondary/50 hover:bg-secondary border border-transparent"
+                      }`}
+                    >
+                      <div className={`w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center ${
+                        timeLimitMode === "custom" ? "border-primary" : "border-muted-foreground/40"
+                      }`}>
+                        {timeLimitMode === "custom" && <div className="w-2 h-2 rounded-full bg-primary" />}
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-medium text-foreground">Custom</span>
+                        {timeLimitMode === "custom" && (
+                          <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
+                            <input
+                              type="number"
+                              min={1}
+                              max={180}
+                              value={customTimeLimit}
+                              onChange={e => setCustomTimeLimit(Number(e.target.value))}
+                              className="w-20 px-3 py-1.5 rounded-lg bg-muted border border-border text-sm text-foreground"
+                            />
+                            <span className="text-xs text-muted-foreground">minutes</span>
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Exam Options */}
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 block">
+                    Exam Options
+                  </label>
+                  <div className="space-y-3">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <Checkbox checked={showResultsAfterExam} onCheckedChange={(v) => setShowResultsAfterExam(!!v)} />
+                      <div>
+                        <span className="text-sm text-foreground">Show results after exam</span>
+                        <p className="text-xs text-muted-foreground">View explanations and correct answers after finishing</p>
+                      </div>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <Checkbox checked={allowMarking} onCheckedChange={(v) => setAllowMarking(!!v)} />
+                      <div>
+                        <span className="text-sm text-foreground">Allow marking questions</span>
+                        <p className="text-xs text-muted-foreground">Flag questions for review during the exam</p>
+                      </div>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <Checkbox checked={lockPreviousQuestions} onCheckedChange={(v) => setLockPreviousQuestions(!!v)} />
+                      <div>
+                        <span className="text-sm text-foreground">Lock previous questions</span>
+                        <p className="text-xs text-muted-foreground">Prevent going back to already answered questions</p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Estimated Time */}
+                <div className="flex items-center gap-2 p-3 rounded-lg bg-secondary/50">
+                  <Clock className="w-4 h-4 text-primary" />
+                  <span className="text-sm text-foreground font-medium">
+                    Estimated time: {estimatedTime} minutes
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    · {actualTimedCount} questions
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {practiceType === "custom" && (
           <div className="mt-4 flex items-center gap-4 p-3 rounded-lg bg-secondary/50">
