@@ -79,40 +79,37 @@ const ActivityHeatmap = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <div
-          className="min-w-[720px]"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(${numWeeks}, 12px)`,
-            gridTemplateRows: 'repeat(7, 12px)',
-            gap: '3px',
-            gridAutoFlow: 'column',
-          }}
-        >
-          {grid.flat().map((day, i) =>
-            day ? (
-              <div
-                key={day.date}
-                className={`w-[12px] h-[12px] rounded-[2px] heatmap-${getLevel(day.count)} cursor-pointer hover:ring-1 hover:ring-foreground/30`}
-                onMouseEnter={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const parent = e.currentTarget.closest('.glass-card')?.getBoundingClientRect();
-                  if (parent) {
-                    setTooltip({
-                      x: rect.left - parent.left + rect.width / 2,
-                      y: rect.top - parent.top - 8,
-                      text: `${day.count} questions solved on ${formatDate(day.date)}`,
-                    });
-                  }
-                }}
-                onMouseLeave={() => setTooltip(null)}
-              />
-            ) : (
-              <div key={`empty-${i}`} className="w-[12px] h-[12px]" />
-            )
-          )}
-        </div>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateRows: 'repeat(7, 10px)',
+          gridAutoFlow: 'column',
+          gridAutoColumns: '10px',
+          gap: '3px',
+        }}
+      >
+        {grid.flat().map((day, i) =>
+          day ? (
+            <div
+              key={day.date}
+              className={`w-[10px] h-[10px] rounded-[2px] heatmap-${getLevel(day.count)} cursor-pointer hover:ring-1 hover:ring-foreground/30`}
+              onMouseEnter={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const parent = e.currentTarget.closest('.glass-card')?.getBoundingClientRect();
+                if (parent) {
+                  setTooltip({
+                    x: rect.left - parent.left + rect.width / 2,
+                    y: rect.top - parent.top - 8,
+                    text: `${day.count} questions solved on ${formatDate(day.date)}`,
+                  });
+                }
+              }}
+              onMouseLeave={() => setTooltip(null)}
+            />
+          ) : (
+            <div key={`empty-${i}`} className="w-[10px] h-[10px]" />
+          )
+        )}
       </div>
       {tooltip && (
         <div
