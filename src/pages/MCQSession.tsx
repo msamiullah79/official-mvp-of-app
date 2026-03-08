@@ -134,7 +134,7 @@ const MCQSession = () => {
         results={results}
         timeTaken={elapsed}
         backPath={backPath}
-        onNavigateToQuestion={(idx) => { setShowSummary(false); navigateTo(idx); }}
+        
       />
     );
   }
