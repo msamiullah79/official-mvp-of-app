@@ -113,20 +113,49 @@ const SubjectPage = () => {
     <div className="p-6 max-w-3xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <div className="flex items-center gap-4 mb-4">
+        <div className="flex items-center gap-2 text-sm mb-4 flex-wrap">
           <button
             onClick={() => navigate("/")}
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" /> Dashboard
+            Dashboard
           </button>
-          <span className="text-muted-foreground/40">·</span>
-          <button
-            onClick={() => navigate(`/practice/${yearSlug}/${moduleSlug}`)}
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {mod.name}
-          </button>
+          <span className="text-muted-foreground/40">›</span>
+          {subjectFilter ? (
+            <>
+              <button
+                onClick={() => navigate(`/practice?subject=${encodeURIComponent(subjectFilter)}`)}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {subjectFilter}
+              </button>
+              <span className="text-muted-foreground/40">›</span>
+              <button
+                onClick={() => navigate(`/practice/${yearSlug}/${moduleSlug}?subject=${encodeURIComponent(subjectFilter)}`)}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {mod.name}
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => navigate("/practice")}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Practice
+              </button>
+              <span className="text-muted-foreground/40">›</span>
+              <button
+                onClick={() => navigate(`/practice/${yearSlug}/${moduleSlug}`)}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {mod.name}
+              </button>
+            </>
+          )}
+          <span className="text-muted-foreground/40">›</span>
+          <span className="text-foreground font-medium">{subject.name}</span>
         </div>
         <h1 className="text-2xl font-bold text-foreground">{subject.name}</h1>
         <p className="text-muted-foreground text-sm">{mod.name} · Select topics and configure your session</p>
