@@ -14,18 +14,18 @@ const ActivityHeatmap = () => {
     return 4;
   };
 
-  const weeks: { date: string; count: number }[][] = [];
-  let currentWeek: { date: string; count: number }[] = [];
-
-  data.forEach((d, i) => {
-    const dayOfWeek = new Date(d.date).getDay();
-    if (dayOfWeek === 0 && currentWeek.length > 0) {
-      weeks.push(currentWeek);
-      currentWeek = [];
-    }
-    currentWeek.push(d);
-    if (i === data.length - 1) weeks.push(currentWeek);
-  });
+  // Build grid: 7 rows (days) x ~53 columns (weeks), column-major order
+  const grid: ({ date: string; count: number } | null)[][] = [];
+  // Pad start so first entry aligns to correct day-of-week
+  const firstDay = new Date(data[0].date).getDay();
+  const padded: ({ date: string; count: number } | null)[] = [
+    ...Array(firstDay).fill(null),
+    ...data,
+  ];
+  const numWeeks = Math.ceil(padded.length / 7);
+  for (let w = 0; w < numWeeks; w++) {
+    grid.push(padded.slice(w * 7, w * 7 + 7));
+  }
 
   const totalSolved = data.reduce((s, d) => s + d.count, 0);
 
@@ -80,29 +80,38 @@ const ActivityHeatmap = () => {
       </div>
 
       <div className="overflow-x-auto">
-        <div className="flex gap-[3px] min-w-[720px]">
-          {weeks.map((week, wi) => (
-            <div key={wi} className="flex flex-col gap-[3px]">
-              {week.map((day) => (
-                <div
-                  key={day.date}
-                  className={`w-[11px] h-[11px] rounded-[2px] heatmap-${getLevel(day.count)} transition-colors cursor-pointer hover:ring-1 hover:ring-foreground/30`}
-                  onMouseEnter={(e) => {
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    const parent = e.currentTarget.closest('.glass-card')?.getBoundingClientRect();
-                    if (parent) {
-                      setTooltip({
-                        x: rect.left - parent.left + rect.width / 2,
-                        y: rect.top - parent.top - 8,
-                        text: `${day.count} questions solved on ${formatDate(day.date)}`,
-                      });
-                    }
-                  }}
-                  onMouseLeave={() => setTooltip(null)}
-                />
-              ))}
-            </div>
-          ))}
+        <div
+          className="min-w-[720px]"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${numWeeks}, 12px)`,
+            gridTemplateRows: 'repeat(7, 12px)',
+            gap: '3px',
+            gridAutoFlow: 'column',
+          }}
+        >
+          {grid.flat().map((day, i) =>
+            day ? (
+              <div
+                key={day.date}
+                className={`w-[12px] h-[12px] rounded-[2px] heatmap-${getLevel(day.count)} cursor-pointer hover:ring-1 hover:ring-foreground/30`}
+                onMouseEnter={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const parent = e.currentTarget.closest('.glass-card')?.getBoundingClientRect();
+                  if (parent) {
+                    setTooltip({
+                      x: rect.left - parent.left + rect.width / 2,
+                      y: rect.top - parent.top - 8,
+                      text: `${day.count} questions solved on ${formatDate(day.date)}`,
+                    });
+                  }
+                }}
+                onMouseLeave={() => setTooltip(null)}
+              />
+            ) : (
+              <div key={`empty-${i}`} className="w-[12px] h-[12px]" />
+            )
+          )}
         </div>
       </div>
       {tooltip && (
