@@ -13,6 +13,7 @@ import Leaderboard from "@/pages/Leaderboard";
 import Profile from "@/pages/Profile";
 import Compete from "@/pages/Compete";
 import ExamMode from "@/pages/ExamMode";
+import RevisionSetup from "@/pages/RevisionSetup";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/practice/:yearSlug/:moduleSlug" element={<BlockPage />} />
             <Route path="/practice/:yearSlug/:moduleSlug/:subjectSlug" element={<SubjectPage />} />
             <Route path="/practice/:yearSlug/:moduleSlug/:subjectSlug/session" element={<MCQSession />} />
+            <Route path="/practice/:yearSlug/:moduleSlug/revision-setup" element={<RevisionSetup />} />
             <Route path="/practice/:yearSlug/:moduleSlug/revision" element={<MCQSession />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/profile" element={<Profile />} />

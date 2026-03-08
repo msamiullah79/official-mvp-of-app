@@ -26,7 +26,7 @@ const BlockPage = () => {
     : null;
 
   const startRevision = () => {
-    navigate(`/practice/${yearSlug}/${moduleSlug}/revision?mode=practice&count=50&randomize=true`);
+    navigate(`/practice/${yearSlug}/${moduleSlug}/revision-setup`);
   };
 
   // Build back link preserving subject filter
