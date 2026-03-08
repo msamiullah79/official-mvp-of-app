@@ -5,7 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  ArrowLeft, Play, Zap, Settings2, Target, BookOpen, Clock, AlertTriangle, Timer, Shield, FileText
+  Play, Zap, Settings2, Target, BookOpen, Clock, AlertTriangle, Timer, Shield, FileText
 } from "lucide-react";
 
 type PracticeMode = "practice" | "exam";
