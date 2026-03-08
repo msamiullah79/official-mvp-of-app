@@ -6,7 +6,7 @@ const QuickPractice = () => {
 
   return (
     <button
-      onClick={() => navigate("/practice/block/1/subject/anatomy/session?mode=practice")}
+      onClick={() => navigate("/practice/year-1/musculoskeletal/anatomy/session?mode=practice&count=10&randomize=true")}
       className="glass-card p-4 flex items-center gap-3 hover:glow-orange transition-all duration-300 group w-full text-left"
     >
       <div className="w-10 h-10 rounded-full gradient-orange flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">

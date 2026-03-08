@@ -2,11 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { PlayCircle } from "lucide-react";
 
 const mockSession = {
-  block: "Block 2",
-  blockId: 2,
+  module: "Cardiovascular System",
   subject: "Physiology",
+  topic: "Cardiac Cycle",
+  yearSlug: "year-1",
+  moduleSlug: "cardiovascular",
   subjectSlug: "physiology",
-  topic: "Renal System",
   progress: 24,
   total: 60,
 };
@@ -23,7 +24,7 @@ const ContinuePractice = () => {
       <div className="flex items-center justify-between">
         <div className="min-w-0">
           <p className="text-sm text-foreground font-medium">
-            {mockSession.block} → {mockSession.subject} → {mockSession.topic}
+            {mockSession.module} → {mockSession.subject} → {mockSession.topic}
           </p>
           <div className="flex items-center gap-3 mt-2">
             <div className="w-32 h-1.5 rounded-full bg-muted overflow-hidden">
@@ -40,7 +41,7 @@ const ContinuePractice = () => {
         <button
           onClick={() =>
             navigate(
-              `/practice/block/${mockSession.blockId}/subject/${mockSession.subjectSlug}/session?mode=practice`
+              `/practice/${mockSession.yearSlug}/${mockSession.moduleSlug}/${mockSession.subjectSlug}/session?mode=practice`
             )
           }
           className="shrink-0 ml-4 px-4 py-2 rounded-lg gradient-orange text-primary-foreground text-sm font-semibold flex items-center gap-2 hover:opacity-90 transition-opacity"

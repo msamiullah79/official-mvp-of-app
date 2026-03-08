@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AppLayout from "@/components/layout/AppLayout";
 import Dashboard from "@/pages/Dashboard";
 import PracticeHome from "@/pages/PracticeHome";
+import ModulePage from "@/pages/ModulePage";
 import BlockPage from "@/pages/BlockPage";
 import SubjectPage from "@/pages/SubjectPage";
 import MCQSession from "@/pages/MCQSession";
@@ -27,9 +28,11 @@ const App = () => (
           <Route element={<AppLayout />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/practice" element={<PracticeHome />} />
-            <Route path="/practice/block/:blockId" element={<BlockPage />} />
-            <Route path="/practice/block/:blockId/subject/:subjectSlug" element={<SubjectPage />} />
-            <Route path="/practice/block/:blockId/subject/:subjectSlug/session" element={<MCQSession />} />
+            <Route path="/practice/:yearSlug" element={<ModulePage />} />
+            <Route path="/practice/:yearSlug/:moduleSlug" element={<BlockPage />} />
+            <Route path="/practice/:yearSlug/:moduleSlug/:subjectSlug" element={<SubjectPage />} />
+            <Route path="/practice/:yearSlug/:moduleSlug/:subjectSlug/session" element={<MCQSession />} />
+            <Route path="/practice/:yearSlug/:moduleSlug/revision" element={<MCQSession />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/profile/:username" element={<Profile />} />
