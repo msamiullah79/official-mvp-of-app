@@ -1,83 +1,74 @@
 import { Link } from "react-router-dom";
 import { academicYears } from "@/data/curriculumData";
+import { currentUser } from "@/data/mockData";
 import { motion } from "framer-motion";
-import { ChevronRight, Lock } from "lucide-react";
+import { ArrowLeft, ChevronRight, Target } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+
+const getUserYearSlug = () => {
+  const yearMatch = currentUser.year.match(/(\d)/);
+  const yearNum = yearMatch ? parseInt(yearMatch[1]) : 1;
+  return `year-${yearNum}`;
+};
 
 const PracticeHome = () => {
+  const yearSlug = getUserYearSlug();
+  const year = academicYears.find((y) => y.slug === yearSlug);
+  const modules = year?.modules || [];
+
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-6 max-w-3xl mx-auto">
+      <Link
+        to="/"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+      >
+        <ArrowLeft className="w-4 h-4" /> Dashboard
+      </Link>
+
       <h1 className="text-2xl font-bold text-foreground mb-1">Practice</h1>
       <p className="text-muted-foreground mb-8">
-        Select your academic year to start practicing MCQs.
+        {year?.name} · Select a module to start practicing.
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {academicYears.map((year, i) => {
-          const hasContent = year.modules.length > 0;
-          const pct = year.totalMCQs > 0 ? Math.round((year.solved / year.totalMCQs) * 100) : 0;
-          const ringSize = 72;
-          const sw = 5;
-          const r = (ringSize - sw) / 2;
-          const circ = 2 * Math.PI * r;
+      <div className="space-y-4">
+        {modules.map((mod, i) => {
+          const pct = mod.mcqCount > 0 ? Math.round((mod.solved / mod.mcqCount) * 100) : 0;
 
           return (
             <motion.div
-              key={year.slug}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              key={mod.slug}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.08 }}
             >
-              {hasContent ? (
-                <Link
-                  to={`/practice/${year.slug}`}
-                  className="glass-card p-5 flex flex-col hover:glow-orange transition-all duration-300 group"
-                >
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className="relative shrink-0">
-                      <svg width={ringSize} height={ringSize} className="-rotate-90">
-                        <circle
-                          cx={ringSize / 2} cy={ringSize / 2} r={r}
-                          fill="none" stroke="hsl(var(--muted))" strokeWidth={sw}
-                        />
-                        <circle
-                          cx={ringSize / 2} cy={ringSize / 2} r={r}
-                          fill="none" stroke="hsl(var(--primary))" strokeWidth={sw}
-                          strokeDasharray={`${(pct / 100) * circ} ${circ - (pct / 100) * circ}`}
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-sm font-bold text-foreground">{pct}%</span>
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
-                        {year.name}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {year.solved} / {year.totalMCQs} solved
-                      </p>
-                    </div>
+              <Link
+                to={`/practice/${yearSlug}/${mod.slug}`}
+                className="glass-card p-5 flex items-center gap-5 hover:glow-orange transition-all duration-300 group"
+              >
+                <div className="w-14 h-14 rounded-xl bg-primary/10 border-2 border-primary/20 flex items-center justify-center shrink-0">
+                  <span className="text-xl font-bold text-primary">
+                    {mod.name[0]}
+                  </span>
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-1">
+                    <h3 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">
+                      {mod.name}
+                    </h3>
                     <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
                   </div>
-                  <div className="flex items-center justify-between text-xs text-muted-foreground pt-3 border-t border-border">
-                    <span>{year.modules.length} modules</span>
-                    <span>Accuracy: {year.accuracy}%</span>
-                  </div>
-                </Link>
-              ) : (
-                <div className="glass-card p-5 opacity-50 cursor-not-allowed">
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className="w-[72px] h-[72px] rounded-full bg-muted/30 flex items-center justify-center shrink-0">
-                      <Lock className="w-5 h-5 text-muted-foreground" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-bold text-foreground">{year.name}</h3>
-                      <p className="text-sm text-muted-foreground">Coming soon</p>
-                    </div>
+
+                  <Progress value={pct} className="h-2 mb-2" />
+
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                    <span className="font-mono">{mod.solved} / {mod.mcqCount} solved</span>
+                    <span className="flex items-center gap-1">
+                      <Target className="w-3 h-3" /> Accuracy: {mod.accuracy}%
+                    </span>
                   </div>
                 </div>
-              )}
+              </Link>
             </motion.div>
           );
         })}

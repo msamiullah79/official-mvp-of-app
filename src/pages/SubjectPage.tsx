@@ -111,12 +111,21 @@ const SubjectPage = () => {
     <div className="p-6 max-w-3xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <button
-          onClick={() => navigate(`/practice/${yearSlug}/${moduleSlug}`)}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
-        >
-          <ArrowLeft className="w-4 h-4" /> Back to {mod.name}
-        </button>
+        <div className="flex items-center gap-4 mb-4">
+          <button
+            onClick={() => navigate("/")}
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" /> Dashboard
+          </button>
+          <span className="text-muted-foreground/40">·</span>
+          <button
+            onClick={() => navigate(`/practice/${yearSlug}/${moduleSlug}`)}
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {mod.name}
+          </button>
+        </div>
         <h1 className="text-2xl font-bold text-foreground">{subject.name}</h1>
         <p className="text-muted-foreground text-sm">{mod.name} · Select topics and configure your session</p>
       </div>

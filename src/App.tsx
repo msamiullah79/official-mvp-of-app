@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AppLayout from "@/components/layout/AppLayout";
 import Dashboard from "@/pages/Dashboard";
 import PracticeHome from "@/pages/PracticeHome";
-import ModulePage from "@/pages/ModulePage";
+import { Navigate } from "react-router-dom";
 import BlockPage from "@/pages/BlockPage";
 import SubjectPage from "@/pages/SubjectPage";
 import MCQSession from "@/pages/MCQSession";
@@ -28,7 +28,7 @@ const App = () => (
           <Route element={<AppLayout />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/practice" element={<PracticeHome />} />
-            <Route path="/practice/:yearSlug" element={<ModulePage />} />
+            <Route path="/practice/:yearSlug" element={<Navigate to="/practice" replace />} />
             <Route path="/practice/:yearSlug/:moduleSlug" element={<BlockPage />} />
             <Route path="/practice/:yearSlug/:moduleSlug/:subjectSlug" element={<SubjectPage />} />
             <Route path="/practice/:yearSlug/:moduleSlug/:subjectSlug/session" element={<MCQSession />} />
