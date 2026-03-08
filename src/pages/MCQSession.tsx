@@ -51,12 +51,13 @@ const MCQSession = () => {
     return 0;
   });
   const [startTime] = useState(Date.now());
+  const [endTime, setEndTime] = useState<number | null>(null);
 
   const isTimed = mode === "timed" || !!timerMinutes;
 
   useEffect(() => {
     if (!isTimed) return;
-    if (timeLeft <= 0) { setShowSummary(true); return; }
+    if (timeLeft <= 0) { endSession(); return; }
     const t = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
     return () => clearInterval(t);
   }, [isTimed, timeLeft]);
@@ -81,9 +82,14 @@ const MCQSession = () => {
     goNext();
   };
 
+  const endSession = () => {
+    if (!endTime) setEndTime(Date.now());
+    setShowSummary(true);
+  };
+
   const goNext = () => {
     if (currentIndex + 1 >= questions.length) {
-      setShowSummary(true);
+      endSession();
     } else {
       navigateTo(currentIndex + 1);
     }
@@ -121,7 +127,7 @@ const MCQSession = () => {
     : `/practice/${yearSlug}/${moduleSlug}`;
 
   if (showSummary) {
-    const elapsed = Math.round((Date.now() - startTime) / 1000);
+    const elapsed = Math.round(((endTime || Date.now()) - startTime) / 1000);
     return (
       <MCQResults
         questions={questions}
@@ -158,7 +164,7 @@ const MCQSession = () => {
               </span>
             </div>
           )}
-          <button onClick={() => setShowSummary(true)} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors">
+          <button onClick={endSession} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors">
             <X className="w-4 h-4" /> End
           </button>
         </div>
