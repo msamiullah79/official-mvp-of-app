@@ -12,6 +12,7 @@ import MCQSession from "@/pages/MCQSession";
 import Leaderboard from "@/pages/Leaderboard";
 import Profile from "@/pages/Profile";
 import Compete from "@/pages/Compete";
+import ExamMode from "@/pages/ExamMode";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/profile/:username" element={<Profile />} />
             <Route path="/compete" element={<Compete />} />
+            <Route path="/exam" element={<ExamMode />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

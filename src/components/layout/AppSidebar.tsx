@@ -1,10 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, BookOpen, BarChart3, User } from "lucide-react";
+import { LayoutDashboard, BookOpen, BarChart3, User, GraduationCap, Trophy } from "lucide-react";
 
 const sidebarItems = [
   { label: "Dashboard", path: "/", icon: LayoutDashboard },
   { label: "Practice", path: "/practice", icon: BookOpen },
+  { label: "Exam Mode", path: "/exam", icon: GraduationCap },
   { label: "Leaderboard", path: "/leaderboard", icon: BarChart3 },
+  { label: "Competitions", path: "/compete", icon: Trophy },
   { label: "Profile", path: "/profile", icon: User },
 ];
 
@@ -16,7 +18,8 @@ const AppSidebar = () => {
       <nav className="flex flex-col gap-1 p-3 pt-4">
         {sidebarItems.map((item) => {
           const isActive = location.pathname === item.path ||
-            (item.path === "/practice" && location.pathname.startsWith("/practice"));
+            (item.path === "/practice" && location.pathname.startsWith("/practice")) ||
+            (item.path === "/exam" && location.pathname.startsWith("/exam"));
           return (
             <Link
               key={item.path}
