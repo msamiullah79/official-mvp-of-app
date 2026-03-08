@@ -173,7 +173,7 @@ const SubjectPage = () => {
           </div>
           <div>
             <h3 className="text-sm font-semibold text-foreground">Quick Practice</h3>
-            <p className="text-xs text-muted-foreground">10 random questions · Mixed topics</p>
+            <p className="text-xs text-muted-foreground">10 random {subject.name} questions</p>
           </div>
         </div>
         <button

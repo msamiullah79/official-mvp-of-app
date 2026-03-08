@@ -81,9 +81,9 @@ const PracticeHome = () => {
           const accuracy = subjectData ? subjectData.accuracy : mod.accuracy;
           const pct = total > 0 ? Math.round((solved / total) * 100) : 0;
 
-          // Build link — pass subject filter through
-          const linkTo = subjectFilter
-            ? `/practice/${yearSlug}/${mod.slug}?subject=${encodeURIComponent(subjectFilter)}`
+          // Build link — when subject filter active, skip BlockPage and go directly to SubjectPage
+          const linkTo = subjectFilter && subjectData
+            ? `/practice/${yearSlug}/${mod.slug}/${subjectData.slug}?subject=${encodeURIComponent(subjectFilter)}`
             : `/practice/${yearSlug}/${mod.slug}`;
 
           return (
