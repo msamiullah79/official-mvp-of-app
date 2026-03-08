@@ -22,12 +22,21 @@ const BlockPage = () => {
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
-      <Link
-        to={`/practice/${yearSlug}`}
-        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
-      >
-        <ArrowLeft className="w-4 h-4" /> Back to Modules
-      </Link>
+      <div className="flex items-center gap-4 mb-6">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" /> Dashboard
+        </Link>
+        <span className="text-muted-foreground/40">·</span>
+        <Link
+          to="/practice"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          Practice
+        </Link>
+      </div>
 
       <h1 className="text-2xl font-bold text-foreground mb-1">{mod.name}</h1>
       <p className="text-muted-foreground mb-6">Choose a subject to practice.</p>

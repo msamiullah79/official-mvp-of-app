@@ -27,7 +27,7 @@ const Dashboard = () => {
           <div className="space-y-6">
             <ProfileCard />
             <SubjectProgress />
-            <WeakAreas />
+            <ModuleProgress />
           </div>
 
           {/* Right Column — Analytics + Activity */}
