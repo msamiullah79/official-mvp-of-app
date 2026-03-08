@@ -62,12 +62,12 @@ export const subjects: SubjectData[] = [
       { name: "Block 3", solved: 18, total: 55 },
     ],
     topics: [
-      { name: "Neurophysiology", count: 12 },
-      { name: "Cardiovascular", count: 15 },
-      { name: "Respiratory", count: 10 },
-      { name: "Renal Physiology", count: 13 },
-      { name: "GI Physiology", count: 11 },
-      { name: "Endocrine", count: 9 },
+      { name: "Neurophysiology", count: 12, accuracy: 68, solved: 7 },
+      { name: "Cardiovascular", count: 15, accuracy: 76, solved: 10 },
+      { name: "Respiratory", count: 10, accuracy: 80, solved: 8 },
+      { name: "Renal Physiology", count: 13, accuracy: 42, solved: 5 },
+      { name: "GI Physiology", count: 11, accuracy: 61, solved: 6 },
+      { name: "Endocrine", count: 9, accuracy: 55, solved: 4 },
     ],
   },
   {
