@@ -9,8 +9,7 @@ interface Props {
   questions: MCQ[];
   results: QuestionResult[];
   timeTaken: number;
-  blockId?: string;
-  subjectSlug?: string;
+  backPath?: string;
   onNavigateToQuestion: (idx: number) => void;
 }
 
