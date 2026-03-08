@@ -3,6 +3,7 @@ import { BookOpen, Trophy, BarChart3, User, Flame, GraduationCap } from "lucide-
 import { currentUser } from "@/data/mockData";
 
 const navItems = [
+  { label: "Dashboard", path: "/", icon: BookOpen, exact: true },
   { label: "Practice", path: "/practice", icon: BookOpen },
   { label: "Exam", path: "/exam", icon: GraduationCap },
   { label: "Compete", path: "/compete", icon: Trophy },
