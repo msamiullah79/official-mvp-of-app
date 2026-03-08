@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { TrendingUp, TrendingDown, Trophy, Globe, Flame } from "lucide-react";
 import { currentUser, catchUpStudents } from "@/data/mockData";
 
@@ -27,16 +28,12 @@ const RankingPanel = () => {
           {currentUser.rankChange > 0 ? (
             <>
               <TrendingUp className="w-3.5 h-3.5 text-success" />
-              <span className="text-xs font-medium text-success">
-                +{currentUser.rankChange}
-              </span>
+              <span className="text-xs font-medium text-success">+{currentUser.rankChange}</span>
             </>
           ) : (
             <>
               <TrendingDown className="w-3.5 h-3.5 text-destructive" />
-              <span className="text-xs font-medium text-destructive">
-                {currentUser.rankChange}
-              </span>
+              <span className="text-xs font-medium text-destructive">{currentUser.rankChange}</span>
             </>
           )}
         </div>
@@ -50,9 +47,7 @@ const RankingPanel = () => {
             Global Rank
           </h3>
         </div>
-        <span className="text-3xl font-bold text-foreground">
-          #{currentUser.globalRank}
-        </span>
+        <span className="text-3xl font-bold text-foreground">#{currentUser.globalRank}</span>
         <div className="mt-3">
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
             <span>Percentile</span>
@@ -77,19 +72,25 @@ const RankingPanel = () => {
         </h3>
         <div className="space-y-3">
           {catchUpStudents.map((student, i) => (
-            <div key={i} className="flex items-center gap-3 p-2.5 rounded-lg bg-secondary/50">
+            <Link
+              key={i}
+              to={`/profile/${student.username}`}
+              className="flex items-center gap-3 p-2.5 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors group"
+            >
               <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary shrink-0">
                 {student.name.split(" ").map(n => n[0]).join("")}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-foreground truncate">{student.name}</p>
+                <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
+                  {student.name}
+                </p>
                 <p className="text-xs text-muted-foreground">{student.solved} solved</p>
               </div>
               <div className="flex items-center gap-1 shrink-0">
                 <Flame className="w-3 h-3 text-primary" />
                 <span className="text-xs font-medium text-foreground">{student.streak}</span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

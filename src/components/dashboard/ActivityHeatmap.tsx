@@ -1,15 +1,15 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { generateHeatmapData } from "@/data/mockData";
 
 const ActivityHeatmap = () => {
   const data = useMemo(() => generateHeatmapData(), []);
+  const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
 
   const getLevel = (count: number) => {
     if (count === 0) return 0;
-    if (count <= 3) return 1;
-    if (count <= 6) return 2;
-    if (count <= 10) return 3;
-    return 4;
+    if (count <= 5) return 1;
+    if (count <= 10) return 2;
+    return 3;
   };
 
   const weeks: { date: string; count: number }[][] = [];
@@ -27,8 +27,13 @@ const ActivityHeatmap = () => {
 
   const totalSolved = data.reduce((s, d) => s + d.count, 0);
 
+  const formatDate = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString("en-US", { month: "long", day: "numeric" });
+  };
+
   return (
-    <div className="glass-card p-5">
+    <div className="glass-card p-5 relative">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
           Activity
@@ -44,17 +49,40 @@ const ActivityHeatmap = () => {
               {week.map((day) => (
                 <div
                   key={day.date}
-                  className={`w-[11px] h-[11px] rounded-[2px] heatmap-${getLevel(day.count)} transition-colors`}
-                  title={`${day.date}: ${day.count} questions`}
+                  className={`w-[11px] h-[11px] rounded-[2px] heatmap-${getLevel(day.count)} transition-colors cursor-pointer hover:ring-1 hover:ring-foreground/30`}
+                  onMouseEnter={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const parent = e.currentTarget.closest('.glass-card')?.getBoundingClientRect();
+                    if (parent) {
+                      setTooltip({
+                        x: rect.left - parent.left + rect.width / 2,
+                        y: rect.top - parent.top - 8,
+                        text: `${day.count} questions solved on ${formatDate(day.date)}`,
+                      });
+                    }
+                  }}
+                  onMouseLeave={() => setTooltip(null)}
                 />
               ))}
             </div>
           ))}
         </div>
       </div>
+      {tooltip && (
+        <div
+          className="absolute z-50 px-3 py-1.5 rounded-md bg-popover border border-border text-xs text-popover-foreground shadow-lg pointer-events-none whitespace-nowrap"
+          style={{
+            left: tooltip.x,
+            top: tooltip.y,
+            transform: "translate(-50%, -100%)",
+          }}
+        >
+          {tooltip.text}
+        </div>
+      )}
       <div className="flex items-center gap-2 mt-3 justify-end">
         <span className="text-[10px] text-muted-foreground">Less</span>
-        {[0, 1, 2, 3, 4].map((level) => (
+        {[0, 1, 2, 3].map((level) => (
           <div key={level} className={`w-[11px] h-[11px] rounded-[2px] heatmap-${level}`} />
         ))}
         <span className="text-[10px] text-muted-foreground">More</span>
