@@ -1,13 +1,27 @@
 import { useNavigate } from "react-router-dom";
-import { Progress } from "@/components/ui/progress";
 import { ChevronRight, Target, BookOpen } from "lucide-react";
 import { academicYears } from "@/data/curriculumData";
 import { currentUser } from "@/data/mockData";
+import type { CurriculumModule } from "@/data/curriculumData";
 
 const getUserYearSlug = () => {
   const yearMatch = currentUser.year.match(/(\d)/);
   const yearNum = yearMatch ? parseInt(yearMatch[1]) : 1;
   return `year-${yearNum}`;
+};
+
+const subjectColorMap: Record<string, string> = {
+  anatomy: "bg-anatomy",
+  physiology: "bg-physiology",
+  biochemistry: "bg-biochemistry",
+};
+
+const getDominantSubjectColor = (mod: CurriculumModule): string => {
+  let max = { slug: "", total: 0 };
+  for (const s of mod.subjects) {
+    if (s.total > max.total) max = { slug: s.slug, total: s.total };
+  }
+  return subjectColorMap[max.slug] || "bg-primary";
 };
 
 const ModuleProgress = () => {
@@ -27,6 +41,7 @@ const ModuleProgress = () => {
       <div className="space-y-2">
         {modules.map((mod) => {
           const pct = mod.mcqCount > 0 ? Math.round((mod.solved / mod.mcqCount) * 100) : 0;
+          const barColor = getDominantSubjectColor(mod);
           return (
             <button
               key={mod.slug}
@@ -40,11 +55,16 @@ const ModuleProgress = () => {
                   </p>
                   <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
                 </div>
-                <Progress value={pct} className="h-1.5 mb-1.5" />
+                <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden mb-1.5">
+                  <div
+                    className={`h-full rounded-full ${barColor}`}
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1">
                     <BookOpen className="w-3 h-3" />
-                    {mod.solved} / {mod.mcqCount}
+                    Solved: {mod.solved} / {mod.mcqCount}
                   </span>
                   <span className="flex items-center gap-1">
                     <Target className="w-3 h-3" />
