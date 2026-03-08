@@ -1,28 +1,44 @@
-import ProfileCard from "@/components/dashboard/ProfileCard";
+import StreakBanner from "@/components/dashboard/StreakBanner";
+import DailyGoal from "@/components/dashboard/DailyGoal";
+import QuickPractice from "@/components/dashboard/QuickPractice";
+import RankCards from "@/components/dashboard/RankCards";
 import SubjectProgress from "@/components/dashboard/SubjectProgress";
-import ActivityHeatmap from "@/components/dashboard/ActivityHeatmap";
 import ProblemsSolved from "@/components/dashboard/ProblemsSolved";
-import RankingPanel from "@/components/dashboard/RankingPanel";
+import WeakAreas from "@/components/dashboard/WeakAreas";
+import ContinuePractice from "@/components/dashboard/ContinuePractice";
+import CatchUpPanel from "@/components/dashboard/CatchUpPanel";
+import ActivityHeatmap from "@/components/dashboard/ActivityHeatmap";
 
 const Dashboard = () => {
   return (
     <div className="p-6">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-[1400px] mx-auto">
-        {/* Left Panel */}
-        <div className="lg:col-span-3 space-y-4">
-          <ProfileCard />
-          <SubjectProgress />
+      <div className="max-w-[1400px] mx-auto space-y-6">
+        {/* Top Row: Streak / Daily Goal / Quick Practice */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <StreakBanner />
+          <DailyGoal />
+          <QuickPractice />
         </div>
 
-        {/* Center Panel */}
-        <div className="lg:col-span-6 space-y-4">
-          <ActivityHeatmap />
+        {/* Rank Cards */}
+        <RankCards />
+
+        {/* Middle Row: Subject Progress / Problems Solved */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <SubjectProgress />
           <ProblemsSolved />
         </div>
 
-        {/* Right Panel */}
-        <div className="lg:col-span-3">
-          <RankingPanel />
+        {/* Weak Areas + Continue Practice */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <WeakAreas />
+          <ContinuePractice />
+        </div>
+
+        {/* Bottom: Catch Up + Heatmap */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <CatchUpPanel />
+          <ActivityHeatmap />
         </div>
       </div>
     </div>
