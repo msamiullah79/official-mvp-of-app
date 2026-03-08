@@ -102,8 +102,8 @@
     -webkit-text-fill-color: transparent;
   }
 
-  .heatmap-0 { background: hsl(0 0% 100% / 0.08); }
-  .heatmap-1 { background: hsl(0 72% 51% / 0.3); }
-  .heatmap-2 { background: hsl(0 72% 51% / 0.55); }
-  .heatmap-3 { background: hsl(0 72% 51% / 0.85); }
+  .heatmap-0 { background: hsl(0 0% 100% / 0.15); }
+  .heatmap-1 { background: hsl(0 80% 55% / 0.45); }
+  .heatmap-2 { background: hsl(0 80% 55% / 0.7); }
+  .heatmap-3 { background: hsl(0 80% 50%); }
 }
