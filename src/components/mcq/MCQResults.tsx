@@ -2,23 +2,23 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MCQ } from "@/data/mockData";
 import { QuestionResult } from "@/pages/MCQSession";
-import { CheckCircle2, XCircle, SkipForward, Clock, BarChart3, Eye } from "lucide-react";
-import { motion } from "framer-motion";
+import { CheckCircle2, XCircle, SkipForward, Clock, BarChart3, Eye, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Props {
   questions: MCQ[];
   results: QuestionResult[];
   timeTaken: number;
   backPath?: string;
-  onNavigateToQuestion: (idx: number) => void;
 }
 
 type Filter = "all" | "correct" | "incorrect" | "skipped" | "unanswered";
 
-const MCQResults = ({ questions, results, timeTaken, backPath, onNavigateToQuestion }: Props) => {
+const MCQResults = ({ questions, results, timeTaken, backPath }: Props) => {
   const navigate = useNavigate();
   const [filter, setFilter] = useState<Filter>("all");
   const [showReview, setShowReview] = useState(false);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   const correct = results.filter(r => r.state === "correct").length;
   const incorrect = results.filter(r => r.state === "incorrect").length;
@@ -33,7 +33,6 @@ const MCQResults = ({ questions, results, timeTaken, backPath, onNavigateToQuest
     return `${m}m ${sec}s`;
   };
 
-  // Subject-wise breakdown
   const subjectMap = new Map<string, { correct: number; total: number }>();
   questions.forEach((q, i) => {
     const r = results[i];
@@ -45,6 +44,10 @@ const MCQResults = ({ questions, results, timeTaken, backPath, onNavigateToQuest
 
   const filtered = questions.map((q, i) => ({ question: q, result: results[i], index: i }))
     .filter(item => filter === "all" || item.result.state === filter);
+
+  const toggleExpand = (index: number) => {
+    setExpandedIndex(prev => prev === index ? null : index);
+  };
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
@@ -83,7 +86,6 @@ const MCQResults = ({ questions, results, timeTaken, backPath, onNavigateToQuest
             </div>
           </div>
 
-          {/* Subject breakdown */}
           {subjectMap.size > 1 && (
             <div className="mb-6">
               <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
@@ -106,7 +108,6 @@ const MCQResults = ({ questions, results, timeTaken, backPath, onNavigateToQuest
             </div>
           )}
 
-          {/* Points earned */}
           <div className="text-center mb-6 p-4 rounded-xl bg-primary/10 border border-primary/20">
             <p className="text-sm text-muted-foreground">Score</p>
             <p className="text-3xl font-bold text-foreground">{correct} / {questions.length}</p>
@@ -132,14 +133,14 @@ const MCQResults = ({ questions, results, timeTaken, backPath, onNavigateToQuest
           </div>
         </div>
 
-        {/* Review section */}
+        {/* Review section - inline accordion */}
         {showReview && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="glass-card p-5">
             <div className="flex items-center gap-2 mb-4 flex-wrap">
               {(["all", "correct", "incorrect", "skipped", "unanswered"] as Filter[]).map(f => (
                 <button
                   key={f}
-                  onClick={() => setFilter(f)}
+                  onClick={() => { setFilter(f); setExpandedIndex(null); }}
                   className={`px-3 py-1.5 rounded-md text-xs font-medium capitalize transition-colors ${
                     filter === f ? "gradient-orange text-primary-foreground" : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
                   }`}
@@ -151,13 +152,13 @@ const MCQResults = ({ questions, results, timeTaken, backPath, onNavigateToQuest
 
             <div className="space-y-3">
               {filtered.map(({ question, result, index }) => (
-                <div
-                  key={question.id}
-                  className="p-4 rounded-lg bg-secondary/30 border border-border/50 cursor-pointer hover:bg-secondary/50 transition-colors"
-                  onClick={() => onNavigateToQuestion(index)}
-                >
-                  <div className="flex items-start gap-3">
-                    <span className="text-xs font-bold text-muted-foreground mt-1">Q{index + 1}</span>
+                <div key={question.id} className="rounded-lg bg-secondary/30 border border-border/50 overflow-hidden">
+                  {/* Question header - clickable */}
+                  <button
+                    className="w-full p-4 flex items-start gap-3 text-left hover:bg-secondary/50 transition-colors"
+                    onClick={() => toggleExpand(index)}
+                  >
+                    <span className="text-xs font-bold text-muted-foreground mt-1 shrink-0">Q{index + 1}</span>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-foreground line-clamp-2">{question.question}</p>
                       <div className="flex items-center gap-2 mt-1.5">
@@ -167,7 +168,64 @@ const MCQResults = ({ questions, results, timeTaken, backPath, onNavigateToQuest
                         {result.state === "unanswered" && <span className="text-xs text-muted-foreground">Unanswered</span>}
                       </div>
                     </div>
-                  </div>
+                    <ChevronDown className={`w-4 h-4 text-muted-foreground shrink-0 mt-1 transition-transform duration-200 ${expandedIndex === index ? "rotate-180" : ""}`} />
+                  </button>
+
+                  {/* Expanded review content */}
+                  <AnimatePresence>
+                    {expandedIndex === index && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-4 pb-4 pt-1 border-t border-border/30 space-y-3">
+                          {/* User's answer - only for answered questions */}
+                          {(result.state === "correct" || result.state === "incorrect") && result.selectedOption !== undefined && (
+                            <div className={`p-3 rounded-lg ${result.state === "correct" ? "bg-success/10 border border-success/20" : "bg-destructive/10 border border-destructive/20"}`}>
+                              <p className="text-xs font-medium text-muted-foreground mb-1">Your Answer</p>
+                              <p className={`text-sm font-medium flex items-center gap-1.5 ${result.state === "correct" ? "text-success" : "text-destructive"}`}>
+                                {result.state === "correct" ? <CheckCircle2 className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
+                                {question.options[result.selectedOption]}
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Correct answer - always show for incorrect/skipped/unanswered */}
+                          {result.state !== "correct" && (
+                            <div className="p-3 rounded-lg bg-success/10 border border-success/20">
+                              <p className="text-xs font-medium text-muted-foreground mb-1">Correct Answer</p>
+                              <p className="text-sm font-medium text-success flex items-center gap-1.5">
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                {question.options[question.correctAnswer]}
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Correct answer confirmation for correct questions */}
+                          {result.state === "correct" && (
+                            <div className="p-3 rounded-lg bg-success/5 border border-success/10">
+                              <p className="text-xs font-medium text-muted-foreground mb-1">Correct Answer</p>
+                              <p className="text-sm font-medium text-success flex items-center gap-1.5">
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                {question.options[question.correctAnswer]}
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Explanation */}
+                          {question.explanation && (
+                            <div className="p-3 rounded-lg bg-primary/5 border border-primary/10">
+                              <p className="text-xs font-medium text-muted-foreground mb-1">Explanation</p>
+                              <p className="text-sm text-foreground leading-relaxed">{question.explanation}</p>
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               ))}
             </div>
