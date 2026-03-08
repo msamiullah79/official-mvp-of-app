@@ -182,38 +182,25 @@ const MCQResults = ({ questions, results, timeTaken, backPath }: Props) => {
                         className="overflow-hidden"
                       >
                         <div className="px-4 pb-4 pt-1 border-t border-border/30 space-y-3">
-                          {/* User's answer - only for answered questions */}
-                          {(result.state === "correct" || result.state === "incorrect") && result.selectedOption !== undefined && (
-                            <div className={`p-3 rounded-lg ${result.state === "correct" ? "bg-success/10 border border-success/20" : "bg-destructive/10 border border-destructive/20"}`}>
+                          {/* User's answer - only for incorrect */}
+                          {result.state === "incorrect" && result.selectedOption !== undefined && (
+                            <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
                               <p className="text-xs font-medium text-muted-foreground mb-1">Your Answer</p>
-                              <p className={`text-sm font-medium flex items-center gap-1.5 ${result.state === "correct" ? "text-success" : "text-destructive"}`}>
-                                {result.state === "correct" ? <CheckCircle2 className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
+                              <p className="text-sm font-medium text-destructive flex items-center gap-1.5">
+                                <XCircle className="w-3.5 h-3.5" />
                                 {question.options[result.selectedOption]}
                               </p>
                             </div>
                           )}
 
-                          {/* Correct answer - always show for incorrect/skipped/unanswered */}
-                          {result.state !== "correct" && (
-                            <div className="p-3 rounded-lg bg-success/10 border border-success/20">
-                              <p className="text-xs font-medium text-muted-foreground mb-1">Correct Answer</p>
-                              <p className="text-sm font-medium text-success flex items-center gap-1.5">
-                                <CheckCircle2 className="w-3.5 h-3.5" />
-                                {question.options[question.correctAnswer]}
-                              </p>
-                            </div>
-                          )}
-
-                          {/* Correct answer confirmation for correct questions */}
-                          {result.state === "correct" && (
-                            <div className="p-3 rounded-lg bg-success/5 border border-success/10">
-                              <p className="text-xs font-medium text-muted-foreground mb-1">Correct Answer</p>
-                              <p className="text-sm font-medium text-success flex items-center gap-1.5">
-                                <CheckCircle2 className="w-3.5 h-3.5" />
-                                {question.options[question.correctAnswer]}
-                              </p>
-                            </div>
-                          )}
+                          {/* Correct answer - always show */}
+                          <div className="p-3 rounded-lg bg-success/10 border border-success/20">
+                            <p className="text-xs font-medium text-muted-foreground mb-1">Correct Answer</p>
+                            <p className="text-sm font-medium text-success flex items-center gap-1.5">
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              {question.options[question.correctAnswer]}
+                            </p>
+                          </div>
 
                           {/* Explanation */}
                           {question.explanation && (
