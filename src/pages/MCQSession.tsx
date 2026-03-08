@@ -164,7 +164,7 @@ const MCQSession = () => {
               </span>
             </div>
           )}
-          <button onClick={() => setShowSummary(true)} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors">
+          <button onClick={endSession} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors">
             <X className="w-4 h-4" /> End
           </button>
         </div>
