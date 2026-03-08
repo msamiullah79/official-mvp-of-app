@@ -127,7 +127,7 @@ const MCQSession = () => {
     : `/practice/${yearSlug}/${moduleSlug}`;
 
   if (showSummary) {
-    const elapsed = Math.round((Date.now() - startTime) / 1000);
+    const elapsed = Math.round(((endTime || Date.now()) - startTime) / 1000);
     return (
       <MCQResults
         questions={questions}
