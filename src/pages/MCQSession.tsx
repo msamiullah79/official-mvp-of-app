@@ -82,9 +82,14 @@ const MCQSession = () => {
     goNext();
   };
 
+  const endSession = () => {
+    if (!endTime) setEndTime(Date.now());
+    setShowSummary(true);
+  };
+
   const goNext = () => {
     if (currentIndex + 1 >= questions.length) {
-      setShowSummary(true);
+      endSession();
     } else {
       navigateTo(currentIndex + 1);
     }
