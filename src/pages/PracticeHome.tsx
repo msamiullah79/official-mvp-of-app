@@ -2,8 +2,8 @@ import { Link, useSearchParams } from "react-router-dom";
 import { academicYears } from "@/data/curriculumData";
 import { currentUser } from "@/data/mockData";
 import { motion } from "framer-motion";
-import { ArrowLeft, ChevronRight, Target, X } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
+import { ArrowLeft, X } from "lucide-react";
+import CircularModuleNode from "@/components/practice/CircularModuleNode";
 
 const getUserYearSlug = () => {
   const yearMatch = currentUser.year.match(/(\d)/);
@@ -19,7 +19,6 @@ const PracticeHome = () => {
   const year = academicYears.find((y) => y.slug === yearSlug);
   const allModules = year?.modules || [];
 
-  // Filter modules that contain the selected subject
   const modules = subjectFilter
     ? allModules.filter((mod) =>
         mod.subjects.some(
@@ -33,6 +32,19 @@ const PracticeHome = () => {
     setSearchParams(searchParams);
   };
 
+  // Build path layout rows: 1, 2, 2, 2, ...
+  const rows: typeof modules[] = [];
+  let idx = 0;
+  if (modules.length > 0) {
+    rows.push([modules[idx++]]);
+  }
+  while (idx < modules.length) {
+    const pair = [];
+    pair.push(modules[idx++]);
+    if (idx < modules.length) pair.push(modules[idx++]);
+    rows.push(pair);
+  }
+
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <Link
@@ -45,13 +57,12 @@ const PracticeHome = () => {
       <h1 className="text-2xl font-bold text-foreground mb-1">
         {subjectFilter ? `${subjectFilter} — Practice` : "Practice"}
       </h1>
-      <p className="text-muted-foreground mb-4">
-        {year?.name} · {subjectFilter ? `Modules containing ${subjectFilter}` : "Select a module to start practicing."}
+      <p className="text-muted-foreground mb-8">
+        {year?.name} · {subjectFilter ? `Modules containing ${subjectFilter}` : "Choose a module to begin your journey."}
       </p>
 
-      {/* Subject filter badge */}
       {subjectFilter && (
-        <div className="flex items-center gap-2 mb-6">
+        <div className="flex items-center gap-2 mb-8">
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium text-primary">
             {subjectFilter}
             <button
@@ -67,61 +78,50 @@ const PracticeHome = () => {
         </div>
       )}
 
-      <div className="space-y-4">
-        {modules.map((mod, i) => {
-          // If subject filter active, show stats for that subject only
-          const subjectData = subjectFilter
-            ? mod.subjects.find(
-                (s) => s.name.toLowerCase() === subjectFilter.toLowerCase()
-              )
-            : null;
-
-          const solved = subjectData ? subjectData.solved : mod.solved;
-          const total = subjectData ? subjectData.total : mod.mcqCount;
-          const accuracy = subjectData ? subjectData.accuracy : mod.accuracy;
-          const pct = total > 0 ? Math.round((solved / total) * 100) : 0;
-
-          // Build link — when subject filter active, skip BlockPage and go directly to SubjectPage
-          const linkTo = subjectFilter && subjectData
-            ? `/practice/${yearSlug}/${mod.slug}/${subjectData.slug}?subject=${encodeURIComponent(subjectFilter)}`
-            : `/practice/${yearSlug}/${mod.slug}`;
-
+      {/* Journey path layout */}
+      <div className="flex flex-col items-center gap-6">
+        {rows.map((row, rowIdx) => {
+          // Connecting line between rows
+          const showConnector = rowIdx > 0;
           return (
-            <motion.div
-              key={mod.slug}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.08 }}
-            >
-              <Link
-                to={linkTo}
-                className="glass-card p-5 flex items-center gap-5 hover:glow-orange transition-all duration-300 group"
+            <div key={rowIdx} className="flex flex-col items-center">
+              {showConnector && (
+                <motion.div
+                  initial={{ scaleY: 0 }}
+                  animate={{ scaleY: 1 }}
+                  transition={{ delay: rowIdx * 0.15, duration: 0.4 }}
+                  className="w-px h-8 bg-border mb-4 origin-top"
+                />
+              )}
+              <div
+                className={`flex items-start gap-12 ${
+                  row.length === 1 ? "justify-center" : "justify-center"
+                }`}
               >
-                <div className="w-14 h-14 rounded-xl bg-primary/10 border-2 border-primary/20 flex items-center justify-center shrink-0">
-                  <span className="text-xl font-bold text-primary">
-                    {mod.name[0]}
-                  </span>
-                </div>
+                {row.map((mod, colIdx) => {
+                  const globalIdx = rowIdx === 0 ? 0 : 1 + (rowIdx - 1) * 2 + colIdx;
+                  const subjectData = subjectFilter
+                    ? mod.subjects.find(
+                        (s) => s.name.toLowerCase() === subjectFilter.toLowerCase()
+                      )
+                    : null;
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <h3 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">
-                      {mod.name}
-                    </h3>
-                    <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
-                  </div>
+                  const linkTo =
+                    subjectFilter && subjectData
+                      ? `/practice/${yearSlug}/${mod.slug}/${subjectData.slug}?subject=${encodeURIComponent(subjectFilter)}`
+                      : `/practice/${yearSlug}/${mod.slug}`;
 
-                  <Progress value={pct} className="h-2 mb-2" />
-
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                    <span className="font-mono">{solved} / {total} solved</span>
-                    <span className="flex items-center gap-1">
-                      <Target className="w-3 h-3" /> Accuracy: {accuracy}%
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
+                  return (
+                    <CircularModuleNode
+                      key={mod.slug}
+                      module={mod}
+                      linkTo={linkTo}
+                      delay={globalIdx * 0.12}
+                    />
+                  );
+                })}
+              </div>
+            </div>
           );
         })}
       </div>
