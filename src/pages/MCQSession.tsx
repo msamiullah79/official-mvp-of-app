@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { sampleMCQs, MCQ } from "@/data/mockData";
 import MCQQuestion from "@/components/mcq/MCQQuestion";
