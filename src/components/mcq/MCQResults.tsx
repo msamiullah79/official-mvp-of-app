@@ -15,7 +15,7 @@ interface Props {
 
 type Filter = "all" | "correct" | "incorrect" | "skipped" | "unanswered";
 
-const MCQResults = ({ questions, results, timeTaken, blockId, subjectSlug, onNavigateToQuestion }: Props) => {
+const MCQResults = ({ questions, results, timeTaken, backPath, onNavigateToQuestion }: Props) => {
   const navigate = useNavigate();
   const [filter, setFilter] = useState<Filter>("all");
   const [showReview, setShowReview] = useState(false);
