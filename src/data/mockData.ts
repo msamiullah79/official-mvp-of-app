@@ -42,12 +42,12 @@ export const subjects: SubjectData[] = [
       { name: "Block 3", solved: 18, total: 55 },
     ],
     topics: [
-      { name: "Upper Limb", count: 15 },
-      { name: "Lower Limb", count: 18 },
-      { name: "Thorax", count: 12 },
-      { name: "Abdomen", count: 14 },
-      { name: "Head & Neck", count: 16 },
-      { name: "Neuroanatomy", count: 10 },
+      { name: "Upper Limb", count: 15, accuracy: 65, solved: 8 },
+      { name: "Lower Limb", count: 18, accuracy: 72, solved: 12 },
+      { name: "Thorax", count: 12, accuracy: 58, solved: 5 },
+      { name: "Abdomen", count: 14, accuracy: 70, solved: 9 },
+      { name: "Head & Neck", count: 16, accuracy: 74, solved: 11 },
+      { name: "Neuroanatomy", count: 10, accuracy: 45, solved: 3 },
     ],
   },
   {
