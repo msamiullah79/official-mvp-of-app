@@ -80,29 +80,38 @@ const ActivityHeatmap = () => {
       </div>
 
       <div className="overflow-x-auto">
-        <div className="flex gap-[3px] min-w-[720px]">
-          {weeks.map((week, wi) => (
-            <div key={wi} className="flex flex-col gap-[3px]">
-              {week.map((day) => (
-                <div
-                  key={day.date}
-                  className={`w-[11px] h-[11px] rounded-[2px] heatmap-${getLevel(day.count)} transition-colors cursor-pointer hover:ring-1 hover:ring-foreground/30`}
-                  onMouseEnter={(e) => {
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    const parent = e.currentTarget.closest('.glass-card')?.getBoundingClientRect();
-                    if (parent) {
-                      setTooltip({
-                        x: rect.left - parent.left + rect.width / 2,
-                        y: rect.top - parent.top - 8,
-                        text: `${day.count} questions solved on ${formatDate(day.date)}`,
-                      });
-                    }
-                  }}
-                  onMouseLeave={() => setTooltip(null)}
-                />
-              ))}
-            </div>
-          ))}
+        <div
+          className="min-w-[720px]"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${numWeeks}, 12px)`,
+            gridTemplateRows: 'repeat(7, 12px)',
+            gap: '3px',
+            gridAutoFlow: 'column',
+          }}
+        >
+          {grid.flat().map((day, i) =>
+            day ? (
+              <div
+                key={day.date}
+                className={`w-[12px] h-[12px] rounded-[2px] heatmap-${getLevel(day.count)} cursor-pointer hover:ring-1 hover:ring-foreground/30`}
+                onMouseEnter={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const parent = e.currentTarget.closest('.glass-card')?.getBoundingClientRect();
+                  if (parent) {
+                    setTooltip({
+                      x: rect.left - parent.left + rect.width / 2,
+                      y: rect.top - parent.top - 8,
+                      text: `${day.count} questions solved on ${formatDate(day.date)}`,
+                    });
+                  }
+                }}
+                onMouseLeave={() => setTooltip(null)}
+              />
+            ) : (
+              <div key={`empty-${i}`} className="w-[12px] h-[12px]" />
+            )
+          )}
         </div>
       </div>
       {tooltip && (
