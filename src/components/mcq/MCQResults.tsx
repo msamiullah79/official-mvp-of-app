@@ -106,19 +106,27 @@ const MCQResults = ({ questions, results, timeTaken, backPath, onNavigateToQuest
             </div>
           )}
 
+          {/* Points earned */}
+          <div className="text-center mb-6 p-4 rounded-xl bg-primary/10 border border-primary/20">
+            <p className="text-sm text-muted-foreground">Score</p>
+            <p className="text-3xl font-bold text-foreground">{correct} / {questions.length}</p>
+            <p className="text-sm text-muted-foreground mt-1">Accuracy: <span className="font-semibold text-primary">{accuracy}%</span></p>
+            <p className="text-sm font-semibold text-primary mt-1">+{correct * 5} Points Earned</p>
+          </div>
+
           <div className="flex gap-3 justify-center">
             <button
               onClick={() => setShowReview(!showReview)}
               className="px-5 py-2.5 rounded-lg bg-secondary text-secondary-foreground text-sm font-medium hover:bg-secondary/80 transition-colors flex items-center gap-2"
             >
-              <Eye className="w-4 h-4" /> {showReview ? "Hide" : "Review"} Answers
+              <Eye className="w-4 h-4" /> {showReview ? "Hide" : "Review"} Questions
             </button>
             {backPath && (
               <button
                 onClick={() => navigate(backPath)}
                 className="px-5 py-2.5 rounded-lg gradient-orange text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
               >
-                Practice Again
+                Go Back to Module
               </button>
             )}
           </div>

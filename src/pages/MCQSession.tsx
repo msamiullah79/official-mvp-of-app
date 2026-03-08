@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { sampleMCQs, MCQ } from "@/data/mockData";
-import MCQSidebar from "@/components/mcq/MCQSidebar";
 import MCQQuestion from "@/components/mcq/MCQQuestion";
 import MCQResults from "@/components/mcq/MCQResults";
+import QuestionNavigator from "@/components/mcq/QuestionNavigator";
 import { ArrowLeft, X, Clock } from "lucide-react";
 
 export type AnswerState = "unanswered" | "correct" | "incorrect" | "skipped";
@@ -22,6 +22,7 @@ const MCQSession = () => {
   const topics = searchParams.get("topics")?.split(",").filter(Boolean) || [];
   const showExplanations = searchParams.get("explanations") !== "false";
   const isExamMode = searchParams.get("examMode") === "true";
+  const timerMinutes = searchParams.get("timer");
 
   const questions = useMemo(() => {
     let filtered = sampleMCQs;
@@ -43,16 +44,21 @@ const MCQSession = () => {
   );
   const [marked, setMarked] = useState<Set<string>>(new Set());
   const [showSummary, setShowSummary] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(mode === "timed" ? 40 * 60 : 0);
+  const [timeLeft, setTimeLeft] = useState(() => {
+    if (timerMinutes) return Number(timerMinutes) * 60;
+    if (mode === "timed") return 40 * 60;
+    return 0;
+  });
   const [startTime] = useState(Date.now());
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const isTimed = mode === "timed" || !!timerMinutes;
 
   useEffect(() => {
-    if (mode !== "timed") return;
+    if (!isTimed) return;
     if (timeLeft <= 0) { setShowSummary(true); return; }
     const t = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
     return () => clearInterval(t);
-  }, [mode, timeLeft]);
+  }, [isTimed, timeLeft]);
 
   const question = questions[currentIndex];
   const currentResult = results[currentIndex];
@@ -67,8 +73,9 @@ const MCQSession = () => {
   };
 
   const handleSkip = () => {
+    // Only mark as skipped if not already answered
     setResults(prev => prev.map((r, i) =>
-      i === currentIndex ? { ...r, state: "skipped" } : r
+      i === currentIndex && r.state === "unanswered" ? { ...r, state: "skipped" } : r
     ));
     goNext();
   };
@@ -86,9 +93,14 @@ const MCQSession = () => {
   };
 
   const navigateTo = (idx: number) => {
+    // Mark current question as skipped if navigating away without answering
+    setResults(prev => prev.map((r, i) =>
+      i === currentIndex && r.state === "unanswered" ? { ...r, state: "skipped" } : r
+    ));
+
     setCurrentIndex(idx);
     const r = results[idx];
-    if (r.state !== "unanswered" && r.state !== "skipped") {
+    if (r.state === "correct" || r.state === "incorrect") {
       setSelectedOption(r.selectedOption ?? null);
       setSubmitted(true);
     } else {
@@ -134,67 +146,55 @@ const MCQSession = () => {
   }
 
   return (
-    <div className="flex h-[calc(100vh-3.5rem)]">
-      {sidebarOpen && (
-        <MCQSidebar
-          questions={questions}
+    <div className="flex flex-col h-[calc(100vh-3.5rem)]">
+      {/* Top bar */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-card/40">
+        <button onClick={() => navigate(backPath)} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Back
+        </button>
+        <div className="flex items-center gap-4">
+          {isTimed && (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm">
+              <Clock className="w-4 h-4 text-primary" />
+              <span className={`font-mono font-semibold ${timeLeft < 60 ? "text-destructive" : "text-foreground"}`}>
+                {formatTime(timeLeft)}
+              </span>
+            </div>
+          )}
+          <button onClick={() => setShowSummary(true)} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors">
+            <X className="w-4 h-4" /> End
+          </button>
+        </div>
+      </div>
+
+      {/* Question navigator */}
+      <div className="px-4 py-2 border-b border-border bg-card/20">
+        <QuestionNavigator
           results={results}
-          marked={marked}
           currentIndex={currentIndex}
           onNavigate={navigateTo}
-          onClose={() => setSidebarOpen(false)}
         />
-      )}
+      </div>
 
-      <div className="flex-1 flex flex-col overflow-auto">
-        <div className="flex items-center justify-between p-4 border-b border-border bg-card/40">
-          <div className="flex items-center gap-3">
-            {!sidebarOpen && (
-              <button onClick={() => setSidebarOpen(true)} className="text-xs px-2.5 py-1.5 rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors">
-                Questions
-              </button>
-            )}
-            <button onClick={() => navigate(backPath)} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-              <ArrowLeft className="w-4 h-4" /> Back
-            </button>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">
-              {currentIndex + 1} / {questions.length}
-            </span>
-            {mode === "timed" && (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm">
-                <Clock className="w-4 h-4 text-primary" />
-                <span className={`font-mono font-semibold ${timeLeft < 60 ? "text-destructive" : "text-foreground"}`}>
-                  {formatTime(timeLeft)}
-                </span>
-              </div>
-            )}
-            <button onClick={() => setShowSummary(true)} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors">
-              <X className="w-4 h-4" /> End
-            </button>
-          </div>
-        </div>
-
-        <div className="flex-1 p-6 max-w-3xl mx-auto w-full">
-          <MCQQuestion
-            question={question}
-            index={currentIndex}
-            total={questions.length}
-            selectedOption={selectedOption}
-            submitted={submitted}
-            isMarked={marked.has(question.id)}
-            showExplanation={showExplanations || !isExamMode}
-            onSelect={setSelectedOption}
-            onSubmit={handleSubmit}
-            onSkip={handleSkip}
-            onNext={goNext}
-            onPrev={goPrev}
-            onToggleMark={toggleMark}
-            hasPrev={currentIndex > 0}
-            hasNext={currentIndex < questions.length - 1}
-          />
-        </div>
+      {/* Question area */}
+      <div className="flex-1 overflow-auto p-6 max-w-3xl mx-auto w-full">
+        <MCQQuestion
+          question={question}
+          index={currentIndex}
+          total={questions.length}
+          selectedOption={selectedOption}
+          submitted={submitted}
+          isMarked={marked.has(question.id)}
+          showExplanation={showExplanations || !isExamMode}
+          onSelect={setSelectedOption}
+          onSubmit={handleSubmit}
+          onSkip={handleSkip}
+          onNext={goNext}
+          onPrev={goPrev}
+          onToggleMark={toggleMark}
+          hasPrev={currentIndex > 0}
+          hasNext={currentIndex < questions.length - 1}
+        />
       </div>
     </div>
   );
