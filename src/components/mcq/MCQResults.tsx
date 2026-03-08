@@ -113,9 +113,9 @@ const MCQResults = ({ questions, results, timeTaken, backPath, onNavigateToQuest
             >
               <Eye className="w-4 h-4" /> {showReview ? "Hide" : "Review"} Answers
             </button>
-            {blockId && subjectSlug && (
+            {backPath && (
               <button
-                onClick={() => navigate(`/practice/block/${blockId}/subject/${subjectSlug}`)}
+                onClick={() => navigate(backPath)}
                 className="px-5 py-2.5 rounded-lg gradient-orange text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
               >
                 Practice Again
