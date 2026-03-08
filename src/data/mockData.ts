@@ -26,7 +26,7 @@ export interface SubjectData {
   total: number;
   color: string;
   blocks: { name: string; solved: number; total: number }[];
-  topics: { name: string; count: number }[];
+  topics: { name: string; count: number; accuracy?: number; solved?: number }[];
 }
 
 export const subjects: SubjectData[] = [
