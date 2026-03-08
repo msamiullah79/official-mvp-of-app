@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AppLayout from "@/components/layout/AppLayout";
 import Dashboard from "@/pages/Dashboard";
 import PracticeHome from "@/pages/PracticeHome";
-import ModulePage from "@/pages/ModulePage";
+import { Navigate } from "react-router-dom";
 import BlockPage from "@/pages/BlockPage";
 import SubjectPage from "@/pages/SubjectPage";
 import MCQSession from "@/pages/MCQSession";
