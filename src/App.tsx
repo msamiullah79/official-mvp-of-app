@@ -34,6 +34,7 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/profile/:username" element={<Profile />} />
             <Route path="/compete" element={<Compete />} />
+            <Route path="/exam" element={<ExamMode />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
