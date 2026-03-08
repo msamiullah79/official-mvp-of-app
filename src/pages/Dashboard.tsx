@@ -1,6 +1,6 @@
 import ProfileCard from "@/components/dashboard/ProfileCard";
 import SubjectProgress from "@/components/dashboard/SubjectProgress";
-import WeakAreas from "@/components/dashboard/WeakAreas";
+import ModuleProgress from "@/components/dashboard/ModuleProgress";
 import RankCards from "@/components/dashboard/RankCards";
 import ProblemsSolved from "@/components/dashboard/ProblemsSolved";
 import ContinuePractice from "@/components/dashboard/ContinuePractice";
