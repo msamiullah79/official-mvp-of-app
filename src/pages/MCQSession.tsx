@@ -51,6 +51,7 @@ const MCQSession = () => {
     return 0;
   });
   const [startTime] = useState(Date.now());
+  const [endTime, setEndTime] = useState<number | null>(null);
 
   const isTimed = mode === "timed" || !!timerMinutes;
 
