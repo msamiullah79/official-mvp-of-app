@@ -1,9 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
-import { BookOpen, Trophy, BarChart3, User, Flame } from "lucide-react";
+import { BookOpen, Trophy, BarChart3, User, Flame, GraduationCap } from "lucide-react";
 import { currentUser } from "@/data/mockData";
 
 const navItems = [
   { label: "Practice", path: "/practice", icon: BookOpen },
+  { label: "Exam", path: "/exam", icon: GraduationCap },
   { label: "Compete", path: "/compete", icon: Trophy },
   { label: "Leaderboard", path: "/leaderboard", icon: BarChart3 },
   { label: "Profile", path: "/profile", icon: User },
