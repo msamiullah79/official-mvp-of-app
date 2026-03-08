@@ -102,8 +102,8 @@
     -webkit-text-fill-color: transparent;
   }
 
-  .heatmap-0 { @apply bg-muted; }
-  .heatmap-1 { background: hsl(142 71% 45% / 0.25); }
-  .heatmap-2 { background: hsl(142 71% 45% / 0.5); }
-  .heatmap-3 { background: hsl(142 71% 45% / 0.85); }
+  .heatmap-0 { background: hsl(0 0% 100% / 0.08); }
+  .heatmap-1 { background: hsl(0 72% 51% / 0.3); }
+  .heatmap-2 { background: hsl(0 72% 51% / 0.55); }
+  .heatmap-3 { background: hsl(0 72% 51% / 0.85); }
 }
