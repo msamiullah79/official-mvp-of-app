@@ -26,7 +26,7 @@ export interface SubjectData {
   total: number;
   color: string;
   blocks: { name: string; solved: number; total: number }[];
-  topics: { name: string; count: number }[];
+  topics: { name: string; count: number; accuracy?: number; solved?: number }[];
 }
 
 export const subjects: SubjectData[] = [
@@ -42,12 +42,12 @@ export const subjects: SubjectData[] = [
       { name: "Block 3", solved: 18, total: 55 },
     ],
     topics: [
-      { name: "Upper Limb", count: 15 },
-      { name: "Lower Limb", count: 18 },
-      { name: "Thorax", count: 12 },
-      { name: "Abdomen", count: 14 },
-      { name: "Head & Neck", count: 16 },
-      { name: "Neuroanatomy", count: 10 },
+      { name: "Upper Limb", count: 15, accuracy: 65, solved: 8 },
+      { name: "Lower Limb", count: 18, accuracy: 72, solved: 12 },
+      { name: "Thorax", count: 12, accuracy: 58, solved: 5 },
+      { name: "Abdomen", count: 14, accuracy: 70, solved: 9 },
+      { name: "Head & Neck", count: 16, accuracy: 74, solved: 11 },
+      { name: "Neuroanatomy", count: 10, accuracy: 45, solved: 3 },
     ],
   },
   {
@@ -62,12 +62,12 @@ export const subjects: SubjectData[] = [
       { name: "Block 3", solved: 18, total: 55 },
     ],
     topics: [
-      { name: "Neurophysiology", count: 12 },
-      { name: "Cardiovascular", count: 15 },
-      { name: "Respiratory", count: 10 },
-      { name: "Renal Physiology", count: 13 },
-      { name: "GI Physiology", count: 11 },
-      { name: "Endocrine", count: 9 },
+      { name: "Neurophysiology", count: 12, accuracy: 68, solved: 7 },
+      { name: "Cardiovascular", count: 15, accuracy: 76, solved: 10 },
+      { name: "Respiratory", count: 10, accuracy: 80, solved: 8 },
+      { name: "Renal Physiology", count: 13, accuracy: 42, solved: 5 },
+      { name: "GI Physiology", count: 11, accuracy: 61, solved: 6 },
+      { name: "Endocrine", count: 9, accuracy: 55, solved: 4 },
     ],
   },
   {
@@ -82,12 +82,12 @@ export const subjects: SubjectData[] = [
       { name: "Block 3", solved: 12, total: 55 },
     ],
     topics: [
-      { name: "Carbohydrate Metabolism", count: 14 },
-      { name: "Lipid Metabolism", count: 12 },
-      { name: "Protein Metabolism", count: 10 },
-      { name: "Vitamins", count: 8 },
-      { name: "Enzymes", count: 11 },
-      { name: "Immunology", count: 9 },
+      { name: "Carbohydrate Metabolism", count: 14, accuracy: 48, solved: 5 },
+      { name: "Lipid Metabolism", count: 12, accuracy: 55, solved: 4 },
+      { name: "Protein Metabolism", count: 10, accuracy: 62, solved: 6 },
+      { name: "Vitamins", count: 8, accuracy: 70, solved: 5 },
+      { name: "Enzymes", count: 11, accuracy: 58, solved: 4 },
+      { name: "Immunology", count: 9, accuracy: 66, solved: 5 },
     ],
   },
 ];
