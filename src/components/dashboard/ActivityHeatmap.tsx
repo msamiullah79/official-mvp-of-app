@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { generateHeatmapData } from "@/data/mockData";
+import { BookOpen, Target, Clock } from "lucide-react";
 
 const ActivityHeatmap = () => {
   const data = useMemo(() => generateHeatmapData(), []);
@@ -9,7 +10,8 @@ const ActivityHeatmap = () => {
     if (count === 0) return 0;
     if (count <= 5) return 1;
     if (count <= 10) return 2;
-    return 3;
+    if (count <= 20) return 3;
+    return 4;
   };
 
   const weeks: { date: string; count: number }[][] = [];
@@ -27,6 +29,12 @@ const ActivityHeatmap = () => {
 
   const totalSolved = data.reduce((s, d) => s + d.count, 0);
 
+  // Weekly stats (last 7 days)
+  const last7 = data.slice(-7);
+  const weekSolved = last7.reduce((s, d) => s + d.count, 0);
+  const weekActive = last7.filter(d => d.count > 0).length;
+  const avgPerDay = weekActive > 0 ? Math.round(weekSolved / weekActive) : 0;
+
   const formatDate = (dateStr: string) => {
     const d = new Date(dateStr);
     return d.toLocaleDateString("en-US", { month: "long", day: "numeric" });
@@ -42,6 +50,35 @@ const ActivityHeatmap = () => {
           {totalSolved} questions in the last year
         </span>
       </div>
+
+      {/* Weekly stats */}
+      <div className="grid grid-cols-3 gap-3 mb-4">
+        <div className="p-3 rounded-lg bg-secondary/50">
+          <div className="flex items-center gap-1.5 mb-1">
+            <BookOpen className="w-3 h-3 text-muted-foreground" />
+            <span className="text-[10px] text-muted-foreground uppercase tracking-wider">This Week</span>
+          </div>
+          <p className="text-lg font-bold text-foreground">{weekSolved}</p>
+          <p className="text-[10px] text-muted-foreground">questions solved</p>
+        </div>
+        <div className="p-3 rounded-lg bg-secondary/50">
+          <div className="flex items-center gap-1.5 mb-1">
+            <Target className="w-3 h-3 text-muted-foreground" />
+            <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Avg / Day</span>
+          </div>
+          <p className="text-lg font-bold text-foreground">{avgPerDay}</p>
+          <p className="text-[10px] text-muted-foreground">questions</p>
+        </div>
+        <div className="p-3 rounded-lg bg-secondary/50">
+          <div className="flex items-center gap-1.5 mb-1">
+            <Clock className="w-3 h-3 text-muted-foreground" />
+            <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Active Days</span>
+          </div>
+          <p className="text-lg font-bold text-foreground">{weekActive}/7</p>
+          <p className="text-[10px] text-muted-foreground">this week</p>
+        </div>
+      </div>
+
       <div className="overflow-x-auto">
         <div className="flex gap-[3px] min-w-[720px]">
           {weeks.map((week, wi) => (
@@ -82,7 +119,7 @@ const ActivityHeatmap = () => {
       )}
       <div className="flex items-center gap-2 mt-3 justify-end">
         <span className="text-[10px] text-muted-foreground">Less</span>
-        {[0, 1, 2, 3].map((level) => (
+        {[0, 1, 2, 3, 4].map((level) => (
           <div key={level} className={`w-[11px] h-[11px] rounded-[2px] heatmap-${level}`} />
         ))}
         <span className="text-[10px] text-muted-foreground">More</span>
