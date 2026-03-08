@@ -1,23 +1,21 @@
 import { useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { subjects, sampleMCQs } from "@/data/mockData";
+import { getModuleSubject, getModule } from "@/data/curriculumData";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
-import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
 import {
-  ArrowLeft, Play, Zap, Settings2, Target, BookOpen, Clock, Shuffle,
-  CheckCircle2, AlertTriangle
+  ArrowLeft, Play, Zap, Settings2, Target, BookOpen, Clock, AlertTriangle
 } from "lucide-react";
 
 type PracticeType = "learning" | "timed" | "custom";
 type Difficulty = "easy" | "medium" | "hard" | "mixed";
 
 const SubjectPage = () => {
-  const { blockId, subjectSlug } = useParams();
+  const { yearSlug, moduleSlug, subjectSlug } = useParams();
   const navigate = useNavigate();
-  const subject = subjects.find(s => s.slug === subjectSlug);
-  const subjectName = subject?.name || "";
+  const mod = getModule(yearSlug || "", moduleSlug || "");
+  const subject = getModuleSubject(yearSlug || "", moduleSlug || "", subjectSlug || "");
   const topics = subject?.topics || [];
 
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
@@ -31,22 +29,24 @@ const SubjectPage = () => {
   const allSelected = selectedTopics.length === topics.length && topics.length > 0;
 
   const weakTopics = useMemo(
-    () => topics.filter(t => (t.accuracy ?? 100) < 60).map(t => t.name),
+    () => topics.filter(t => t.accuracy < 60).map(t => t.slug),
     [topics]
   );
   const unsolvedTopics = useMemo(
-    () => topics.filter(t => (t.solved ?? 0) < t.count).map(t => t.name),
+    () => topics.filter(t => t.solved < t.mcqCount).map(t => t.slug),
     [topics]
   );
 
-  const toggleTopic = (name: string) =>
+  const toggleTopic = (slug: string) =>
     setSelectedTopics(prev =>
-      prev.includes(name) ? prev.filter(t => t !== name) : [...prev, name]
+      prev.includes(slug) ? prev.filter(t => t !== slug) : [...prev, slug]
     );
 
-  const toggleAll = () => setSelectedTopics(allSelected ? [] : topics.map(t => t.name));
+  const toggleAll = () => setSelectedTopics(allSelected ? [] : topics.map(t => t.slug));
   const selectWeak = () => setSelectedTopics(weakTopics);
   const selectUnsolved = () => setSelectedTopics(unsolvedTopics);
+
+  const basePath = `/practice/${yearSlug}/${moduleSlug}/${subjectSlug}`;
 
   const startSession = () => {
     const params = new URLSearchParams();
@@ -56,7 +56,7 @@ const SubjectPage = () => {
     if (randomize) params.set("randomize", "true");
     if (!showExplanations) params.set("explanations", "false");
     if (difficulty !== "mixed") params.set("difficulty", difficulty);
-    navigate(`/practice/block/${blockId}/subject/${subjectSlug}/session?${params.toString()}`);
+    navigate(`${basePath}/session?${params.toString()}`);
   };
 
   const startQuickPractice = () => {
@@ -64,7 +64,7 @@ const SubjectPage = () => {
     params.set("mode", "practice");
     params.set("count", "10");
     params.set("randomize", "true");
-    navigate(`/practice/block/${blockId}/subject/${subjectSlug}/session?${params.toString()}`);
+    navigate(`${basePath}/session?${params.toString()}`);
   };
 
   const buttonLabel = practiceType === "timed"
@@ -73,21 +73,25 @@ const SubjectPage = () => {
       ? "Start Custom Practice"
       : "Start Practice";
 
+  if (!subject || !mod) {
+    return <div className="p-6 text-center text-muted-foreground">Subject not found.</div>;
+  }
+
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-6">
       {/* Header */}
       <div>
         <button
-          onClick={() => navigate(`/practice/block/${blockId}`)}
+          onClick={() => navigate(`/practice/${yearSlug}/${moduleSlug}`)}
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to Block {blockId}
+          <ArrowLeft className="w-4 h-4" /> Back to {mod.name}
         </button>
-        <h1 className="text-2xl font-bold text-foreground">{subjectName}</h1>
-        <p className="text-muted-foreground text-sm">Block {blockId} · Select topics and configure your session</p>
+        <h1 className="text-2xl font-bold text-foreground">{subject.name}</h1>
+        <p className="text-muted-foreground text-sm">{mod.name} · Select topics and configure your session</p>
       </div>
 
-      {/* Quick Practice Card */}
+      {/* Quick Practice */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -110,7 +114,7 @@ const SubjectPage = () => {
         </button>
       </motion.div>
 
-      {/* SECTION 1: Topic Selection */}
+      {/* Topic Selection */}
       <div className="glass-card p-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
@@ -142,14 +146,12 @@ const SubjectPage = () => {
 
         <div className="space-y-2">
           {topics.map((topic, i) => {
-            const selected = selectedTopics.includes(topic.name);
-            const accuracy = topic.accuracy ?? 0;
-            const solved = topic.solved ?? 0;
-            const isWeak = accuracy < 60;
+            const selected = selectedTopics.includes(topic.slug);
+            const isWeak = topic.accuracy < 60;
 
             return (
               <motion.div
-                key={topic.name}
+                key={topic.slug}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.04 }}
@@ -158,11 +160,11 @@ const SubjectPage = () => {
                     ? "bg-primary/10 border border-primary/20"
                     : "bg-secondary/50 hover:bg-secondary"
                 }`}
-                onClick={() => toggleTopic(topic.name)}
+                onClick={() => toggleTopic(topic.slug)}
               >
                 <Checkbox
                   checked={selected}
-                  onCheckedChange={() => toggleTopic(topic.name)}
+                  onCheckedChange={() => toggleTopic(topic.slug)}
                   className="shrink-0"
                 />
                 <div className="flex-1 min-w-0">
@@ -176,10 +178,10 @@ const SubjectPage = () => {
                   </div>
                   <div className="flex items-center gap-3 mt-1">
                     <span className="text-xs text-muted-foreground flex items-center gap-1">
-                      <BookOpen className="w-3 h-3" /> {solved} / {topic.count}
+                      <BookOpen className="w-3 h-3" /> {topic.solved} / {topic.mcqCount}
                     </span>
                     <span className={`text-xs flex items-center gap-1 ${isWeak ? "text-destructive" : "text-muted-foreground"}`}>
-                      <Target className="w-3 h-3" /> {accuracy}%
+                      <Target className="w-3 h-3" /> {topic.accuracy}%
                     </span>
                   </div>
                 </div>
@@ -189,31 +191,16 @@ const SubjectPage = () => {
         </div>
       </div>
 
-      {/* SECTION 2: Practice Type */}
+      {/* Practice Type */}
       <div className="glass-card p-5">
         <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
           Practice Type
         </h2>
         <div className="space-y-2">
           {([
-            {
-              key: "learning" as PracticeType,
-              icon: BookOpen,
-              label: "Learning Mode",
-              desc: "Immediate feedback and explanation after each question",
-            },
-            {
-              key: "timed" as PracticeType,
-              icon: Clock,
-              label: "Timed Mode",
-              desc: "Simulates exam conditions with a timer",
-            },
-            {
-              key: "custom" as PracticeType,
-              icon: Settings2,
-              label: "Custom Set",
-              desc: "Choose the number of questions",
-            },
+            { key: "learning" as PracticeType, icon: BookOpen, label: "Learning Mode", desc: "Immediate feedback and explanation after each question" },
+            { key: "timed" as PracticeType, icon: Clock, label: "Timed Mode", desc: "Simulates exam conditions with a timer" },
+            { key: "custom" as PracticeType, icon: Settings2, label: "Custom Set", desc: "Choose the number of questions" },
           ]).map(m => {
             const active = practiceType === m.key;
             return (
@@ -262,7 +249,7 @@ const SubjectPage = () => {
         )}
       </div>
 
-      {/* SECTION 3: Advanced Settings */}
+      {/* Advanced Settings */}
       <div className="glass-card overflow-hidden">
         <button
           onClick={() => setShowAdvanced(!showAdvanced)}
@@ -281,7 +268,6 @@ const SubjectPage = () => {
             animate={{ opacity: 1, height: "auto" }}
             className="px-5 pb-5 space-y-5 border-t border-border pt-4"
           >
-            {/* Difficulty */}
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">
                 Difficulty
@@ -303,7 +289,6 @@ const SubjectPage = () => {
               </div>
             </div>
 
-            {/* Toggles */}
             <div className="flex items-center justify-between">
               <div>
                 <label className="text-sm text-foreground">Randomize Questions</label>
@@ -322,7 +307,7 @@ const SubjectPage = () => {
         )}
       </div>
 
-      {/* SECTION 4: Start Button */}
+      {/* Start Button */}
       <motion.button
         onClick={startSession}
         whileTap={{ scale: 0.98 }}

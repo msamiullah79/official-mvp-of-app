@@ -16,7 +16,7 @@ export interface QuestionResult {
 
 const MCQSession = () => {
   const navigate = useNavigate();
-  const { blockId, subjectSlug } = useParams();
+  const { yearSlug, moduleSlug, subjectSlug } = useParams();
   const [searchParams] = useSearchParams();
   const mode = searchParams.get("mode") || "practice";
   const topics = searchParams.get("topics")?.split(",").filter(Boolean) || [];
@@ -107,6 +107,10 @@ const MCQSession = () => {
 
   const formatTime = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, "0")}`;
 
+  const backPath = subjectSlug
+    ? `/practice/${yearSlug}/${moduleSlug}/${subjectSlug}`
+    : `/practice/${yearSlug}/${moduleSlug}`;
+
   if (showSummary) {
     const elapsed = Math.round((Date.now() - startTime) / 1000);
     return (
@@ -114,8 +118,7 @@ const MCQSession = () => {
         questions={questions}
         results={results}
         timeTaken={elapsed}
-        blockId={blockId}
-        subjectSlug={subjectSlug}
+        backPath={backPath}
         onNavigateToQuestion={(idx) => { setShowSummary(false); navigateTo(idx); }}
       />
     );
@@ -132,7 +135,6 @@ const MCQSession = () => {
 
   return (
     <div className="flex h-[calc(100vh-3.5rem)]">
-      {/* Sidebar */}
       {sidebarOpen && (
         <MCQSidebar
           questions={questions}
@@ -144,9 +146,7 @@ const MCQSession = () => {
         />
       )}
 
-      {/* Main area */}
       <div className="flex-1 flex flex-col overflow-auto">
-        {/* Top bar */}
         <div className="flex items-center justify-between p-4 border-b border-border bg-card/40">
           <div className="flex items-center gap-3">
             {!sidebarOpen && (
@@ -154,7 +154,7 @@ const MCQSession = () => {
                 Questions
               </button>
             )}
-            <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <button onClick={() => navigate(backPath)} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
               <ArrowLeft className="w-4 h-4" /> Back
             </button>
           </div>
@@ -176,7 +176,6 @@ const MCQSession = () => {
           </div>
         </div>
 
-        {/* Question area */}
         <div className="flex-1 p-6 max-w-3xl mx-auto w-full">
           <MCQQuestion
             question={question}
