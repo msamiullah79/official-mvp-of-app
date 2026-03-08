@@ -41,7 +41,7 @@ const SubjectProgress = () => {
                   </span>
                 </div>
                 <span className="text-xs text-muted-foreground">
-                  {subject.solved} / {subject.total}
+                  Solved: {subject.solved} / {subject.total}
                 </span>
               </div>
               <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden mb-1.5">
