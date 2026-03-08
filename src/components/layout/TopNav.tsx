@@ -26,8 +26,9 @@ const TopNav = () => {
 
         <nav className="hidden md:flex items-center gap-1">
           {navItems.map((item) => {
-            const isActive = location.pathname.startsWith(item.path) ||
-              (item.path === "/practice" && location.pathname === "/");
+            const isActive = ('exact' in item && item.exact)
+              ? location.pathname === item.path
+              : location.pathname.startsWith(item.path);
             return (
               <Link
                 key={item.path}
