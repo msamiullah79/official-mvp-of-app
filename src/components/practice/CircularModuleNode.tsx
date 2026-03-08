@@ -8,21 +8,17 @@ interface CircularModuleNodeProps {
   delay?: number;
 }
 
-const getAccuracyColor = (accuracy: number) => {
-  if (accuracy >= 70) return { ring: "hsl(var(--success))", bg: "hsl(var(--success) / 0.12)", text: "text-success" };
-  if (accuracy >= 50) return { ring: "hsl(45 93% 47%)", bg: "hsl(45 93% 47% / 0.12)", text: "text-yellow-400" };
-  return { ring: "hsl(var(--destructive))", bg: "hsl(var(--destructive) / 0.12)", text: "text-destructive" };
+const getAccuracyStyle = (accuracy: number) => {
+  if (accuracy >= 80) return { bg: "hsla(142, 71%, 45%, 0.15)", border: "hsl(var(--success))", text: "text-success" };
+  if (accuracy >= 65) return { bg: "hsla(45, 93%, 47%, 0.15)", border: "hsl(45 93% 47%)", text: "text-yellow-400" };
+  return { bg: "hsla(0, 72%, 51%, 0.15)", border: "hsl(var(--destructive))", text: "text-destructive" };
 };
 
 const CircularModuleNode = ({ module, linkTo, delay = 0 }: CircularModuleNodeProps) => {
   const navigate = useNavigate();
-  const total = module.mcqCount;
-  const solved = module.solved;
-  const pct = total > 0 ? Math.round((solved / total) * 100) : 0;
-  const accuracy = module.accuracy;
-  const colors = getAccuracyColor(accuracy);
+  const pct = module.mcqCount > 0 ? Math.round((module.solved / module.mcqCount) * 100) : 0;
+  const accStyle = getAccuracyStyle(module.accuracy);
 
-  // SVG circle math
   const size = 160;
   const strokeWidth = 8;
   const radius = (size - strokeWidth) / 2;
@@ -43,30 +39,15 @@ const CircularModuleNode = ({ module, linkTo, delay = 0 }: CircularModuleNodePro
         className="relative"
         style={{ width: size, height: size }}
       >
-        {/* Glow effect on hover */}
-        <div
-          className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"
-          style={{ background: colors.ring, transform: "scale(0.7)" }}
-        />
+        {/* Hover glow - orange */}
+        <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl bg-primary" style={{ transform: "scale(0.7)" }} />
 
-        {/* SVG ring */}
+        {/* SVG ring - always orange for progress */}
         <svg width={size} height={size} className="relative z-10 -rotate-90">
-          {/* Background track */}
-          <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            fill="none"
-            stroke="hsl(var(--muted))"
-            strokeWidth={strokeWidth}
-          />
-          {/* Progress arc */}
+          <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="hsl(var(--muted))" strokeWidth={strokeWidth} />
           <motion.circle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            fill="none"
-            stroke={colors.ring}
+            cx={size / 2} cy={size / 2} r={radius} fill="none"
+            stroke="hsl(var(--primary))"
             strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeDasharray={circumference}
@@ -76,28 +57,25 @@ const CircularModuleNode = ({ module, linkTo, delay = 0 }: CircularModuleNodePro
           />
         </svg>
 
-        {/* Center content */}
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center">
+        {/* Inner circle - accuracy colored */}
+        <div className="absolute inset-0 z-20 flex items-center justify-center">
           <div
-            className="w-[120px] h-[120px] rounded-full flex flex-col items-center justify-center border border-border/50"
-            style={{ background: colors.bg }}
+            className="w-[120px] h-[120px] rounded-full flex flex-col items-center justify-center border"
+            style={{ background: accStyle.bg, borderColor: accStyle.border }}
           >
-            <span className={`text-2xl font-bold font-mono ${colors.text}`}>
-              {pct}%
-            </span>
-            <span className="text-[10px] text-muted-foreground mt-0.5">
-              {solved}/{total}
+            <span className="text-2xl font-bold font-mono text-foreground">{pct}%</span>
+            <span className="text-[11px] text-muted-foreground font-mono mt-0.5">
+              {module.solved} / {module.mcqCount}
             </span>
           </div>
         </div>
       </motion.div>
 
-      {/* Module name below */}
       <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors text-center max-w-[140px] leading-tight">
         {module.name}
       </span>
-      <span className="text-xs text-muted-foreground -mt-2">
-        {accuracy}% accuracy
+      <span className={`text-xs -mt-2 font-medium ${accStyle.text}`}>
+        {module.accuracy}% accuracy
       </span>
     </motion.div>
   );
