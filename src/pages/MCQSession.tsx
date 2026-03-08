@@ -94,10 +94,6 @@ const MCQSession = () => {
   };
 
   const navigateTo = (idx: number) => {
-    // Mark current question as skipped if navigating away without answering
-    setResults(prev => prev.map((r, i) =>
-      i === currentIndex && r.state === "unanswered" ? { ...r, state: "skipped" } : r
-    ));
 
     setCurrentIndex(idx);
     const r = results[idx];
