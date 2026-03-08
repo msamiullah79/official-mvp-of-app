@@ -31,6 +31,7 @@ const App = () => (
             <Route path="/practice/block/:blockId/subject/:subjectSlug/session" element={<MCQSession />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/:username" element={<Profile />} />
             <Route path="/compete" element={<Compete />} />
           </Route>
           <Route path="*" element={<NotFound />} />
