@@ -19,22 +19,23 @@ const MCQSession = () => {
   const { yearSlug, moduleSlug, subjectSlug } = useParams();
   const [searchParams] = useSearchParams();
   const mode = searchParams.get("mode") || "practice";
-  const topics = searchParams.get("topics")?.split(",").filter(Boolean) || [];
+  const topicsParam = searchParams.get("topics") || "";
   const showExplanations = searchParams.get("explanations") !== "false";
   const isExamMode = searchParams.get("examMode") === "true";
   const timerMinutes = searchParams.get("timer");
+  const customCount = searchParams.get("count");
+  const randomize = searchParams.get("randomize");
 
-  const questions = useMemo(() => {
+  const [questions] = useState(() => {
+    const topics = topicsParam.split(",").filter(Boolean);
     let filtered = sampleMCQs;
     if (subjectSlug) filtered = filtered.filter(q => q.subject === subjectSlug);
     if (topics.length > 0) filtered = filtered.filter(q => topics.includes(q.topic));
     if (filtered.length === 0) filtered = sampleMCQs;
-    const customCount = searchParams.get("count");
     if (customCount) filtered = filtered.slice(0, Number(customCount));
-    const randomize = searchParams.get("randomize");
     if (randomize === "true") filtered = [...filtered].sort(() => Math.random() - 0.5);
     return filtered;
-  }, [subjectSlug, topics, searchParams]);
+  });
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
