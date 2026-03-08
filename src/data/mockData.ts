@@ -82,12 +82,12 @@ export const subjects: SubjectData[] = [
       { name: "Block 3", solved: 12, total: 55 },
     ],
     topics: [
-      { name: "Carbohydrate Metabolism", count: 14 },
-      { name: "Lipid Metabolism", count: 12 },
-      { name: "Protein Metabolism", count: 10 },
-      { name: "Vitamins", count: 8 },
-      { name: "Enzymes", count: 11 },
-      { name: "Immunology", count: 9 },
+      { name: "Carbohydrate Metabolism", count: 14, accuracy: 48, solved: 5 },
+      { name: "Lipid Metabolism", count: 12, accuracy: 55, solved: 4 },
+      { name: "Protein Metabolism", count: 10, accuracy: 62, solved: 6 },
+      { name: "Vitamins", count: 8, accuracy: 70, solved: 5 },
+      { name: "Enzymes", count: 11, accuracy: 58, solved: 4 },
+      { name: "Immunology", count: 9, accuracy: 66, solved: 5 },
     ],
   },
 ];
