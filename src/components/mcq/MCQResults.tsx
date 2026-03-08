@@ -9,14 +9,13 @@ interface Props {
   questions: MCQ[];
   results: QuestionResult[];
   timeTaken: number;
-  blockId?: string;
-  subjectSlug?: string;
+  backPath?: string;
   onNavigateToQuestion: (idx: number) => void;
 }
 
 type Filter = "all" | "correct" | "incorrect" | "skipped" | "unanswered";
 
-const MCQResults = ({ questions, results, timeTaken, blockId, subjectSlug, onNavigateToQuestion }: Props) => {
+const MCQResults = ({ questions, results, timeTaken, backPath, onNavigateToQuestion }: Props) => {
   const navigate = useNavigate();
   const [filter, setFilter] = useState<Filter>("all");
   const [showReview, setShowReview] = useState(false);
@@ -114,9 +113,9 @@ const MCQResults = ({ questions, results, timeTaken, blockId, subjectSlug, onNav
             >
               <Eye className="w-4 h-4" /> {showReview ? "Hide" : "Review"} Answers
             </button>
-            {blockId && subjectSlug && (
+            {backPath && (
               <button
-                onClick={() => navigate(`/practice/block/${blockId}/subject/${subjectSlug}`)}
+                onClick={() => navigate(backPath)}
                 className="px-5 py-2.5 rounded-lg gradient-orange text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
               >
                 Practice Again
