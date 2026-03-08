@@ -1,8 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
-import { BookOpen, Trophy, BarChart3, User, Flame, GraduationCap } from "lucide-react";
+import { BookOpen, Trophy, BarChart3, User, Flame, GraduationCap, LayoutDashboard } from "lucide-react";
 import { currentUser } from "@/data/mockData";
 
 const navItems = [
+  { label: "Dashboard", path: "/", icon: LayoutDashboard, exact: true },
   { label: "Practice", path: "/practice", icon: BookOpen },
   { label: "Exam", path: "/exam", icon: GraduationCap },
   { label: "Compete", path: "/compete", icon: Trophy },
@@ -25,8 +26,9 @@ const TopNav = () => {
 
         <nav className="hidden md:flex items-center gap-1">
           {navItems.map((item) => {
-            const isActive = location.pathname.startsWith(item.path) ||
-              (item.path === "/practice" && location.pathname === "/");
+            const isActive = ('exact' in item && item.exact)
+              ? location.pathname === item.path
+              : location.pathname.startsWith(item.path);
             return (
               <Link
                 key={item.path}
