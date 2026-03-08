@@ -14,18 +14,18 @@ const ActivityHeatmap = () => {
     return 4;
   };
 
-  const weeks: { date: string; count: number }[][] = [];
-  let currentWeek: { date: string; count: number }[] = [];
-
-  data.forEach((d, i) => {
-    const dayOfWeek = new Date(d.date).getDay();
-    if (dayOfWeek === 0 && currentWeek.length > 0) {
-      weeks.push(currentWeek);
-      currentWeek = [];
-    }
-    currentWeek.push(d);
-    if (i === data.length - 1) weeks.push(currentWeek);
-  });
+  // Build grid: 7 rows (days) x ~53 columns (weeks), column-major order
+  const grid: ({ date: string; count: number } | null)[][] = [];
+  // Pad start so first entry aligns to correct day-of-week
+  const firstDay = new Date(data[0].date).getDay();
+  const padded: ({ date: string; count: number } | null)[] = [
+    ...Array(firstDay).fill(null),
+    ...data,
+  ];
+  const numWeeks = Math.ceil(padded.length / 7);
+  for (let w = 0; w < numWeeks; w++) {
+    grid.push(padded.slice(w * 7, w * 7 + 7));
+  }
 
   const totalSolved = data.reduce((s, d) => s + d.count, 0);
 
