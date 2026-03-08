@@ -16,6 +16,8 @@ type TimeLimitMode = "auto" | "custom";
 const SubjectPage = () => {
   const { yearSlug, moduleSlug, subjectSlug } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const subjectFilter = searchParams.get("subject");
   const mod = getModule(yearSlug || "", moduleSlug || "");
   const subject = getModuleSubject(yearSlug || "", moduleSlug || "", subjectSlug || "");
   const topics = subject?.topics || [];
