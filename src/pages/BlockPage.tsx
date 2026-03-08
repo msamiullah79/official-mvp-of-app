@@ -101,7 +101,7 @@ const BlockPage = () => {
                 transition={{ delay: i * 0.06 }}
               >
                 <Link
-                  to={`/practice/${yearSlug}/${moduleSlug}/${filteredSubject.slug}/${topic.slug}?subject=${encodeURIComponent(subjectFilter)}`}
+                  to={`/practice/${yearSlug}/${moduleSlug}/${filteredSubject.slug}?subject=${encodeURIComponent(subjectFilter)}`}
                   className="glass-card p-4 flex items-center gap-4 hover:glow-orange transition-all duration-300 group"
                 >
                   <div className="flex-1 min-w-0">
