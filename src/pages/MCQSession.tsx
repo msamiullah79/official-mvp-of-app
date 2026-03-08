@@ -57,7 +57,7 @@ const MCQSession = () => {
 
   useEffect(() => {
     if (!isTimed) return;
-    if (timeLeft <= 0) { setShowSummary(true); return; }
+    if (timeLeft <= 0) { endSession(); return; }
     const t = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
     return () => clearInterval(t);
   }, [isTimed, timeLeft]);
