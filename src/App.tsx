@@ -3,8 +3,16 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+import AppLayout from "@/components/layout/AppLayout";
+import Dashboard from "@/pages/Dashboard";
+import PracticeHome from "@/pages/PracticeHome";
+import BlockPage from "@/pages/BlockPage";
+import SubjectPage from "@/pages/SubjectPage";
+import MCQSession from "@/pages/MCQSession";
+import Leaderboard from "@/pages/Leaderboard";
+import Profile from "@/pages/Profile";
+import Compete from "@/pages/Compete";
+import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -15,8 +23,16 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/practice" element={<PracticeHome />} />
+            <Route path="/practice/block/:blockId" element={<BlockPage />} />
+            <Route path="/practice/block/:blockId/subject/:subjectSlug" element={<SubjectPage />} />
+            <Route path="/practice/block/:blockId/subject/:subjectSlug/session" element={<MCQSession />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/compete" element={<Compete />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
