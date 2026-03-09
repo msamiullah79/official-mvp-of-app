@@ -14,6 +14,7 @@ import Profile from "@/pages/Profile";
 import Compete from "@/pages/Compete";
 import ExamMode from "@/pages/ExamMode";
 import RevisionSetup from "@/pages/RevisionSetup";
+import SubjectRevisionSetup from "@/pages/SubjectRevisionSetup";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
