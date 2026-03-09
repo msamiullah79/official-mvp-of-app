@@ -506,7 +506,7 @@ const SubjectPage = () => {
         <div className="grid grid-cols-2 gap-3">
           <div className="p-3 rounded-lg bg-secondary/50">
             <span className="text-xs text-muted-foreground">Topics</span>
-            <p className="text-sm font-medium text-foreground">{selectedTopics.length || "All"}</p>
+            <p className="text-sm font-medium text-foreground truncate" title={getSelectedTopicsDisplay()}>{getSelectedTopicsDisplay()}</p>
           </div>
           <div className="p-3 rounded-lg bg-secondary/50">
             <span className="text-xs text-muted-foreground">Questions</span>
