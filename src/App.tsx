@@ -12,6 +12,8 @@ import MCQSession from "@/pages/MCQSession";
 import Leaderboard from "@/pages/Leaderboard";
 import Profile from "@/pages/Profile";
 import Compete from "@/pages/Compete";
+import CompetitionSession from "@/pages/CompetitionSession";
+import CompetitionResults from "@/pages/CompetitionResults";
 import ExamMode from "@/pages/ExamMode";
 import RevisionSetup from "@/pages/RevisionSetup";
 import SubjectRevisionSetup from "@/pages/SubjectRevisionSetup";
