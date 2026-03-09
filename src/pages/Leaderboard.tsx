@@ -218,45 +218,49 @@ const Leaderboard = () => {
       </div>
 
       {/* Your Position Card */}
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="glass-card p-4 md:p-5 border-primary/30 bg-primary/5"
-      >
-        <div className="flex items-center gap-2 mb-3">
-          <Star className="w-4 h-4 text-primary" />
-          <span className="text-sm font-semibold text-primary uppercase tracking-wider">Your Position</span>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-          <div>
-            <p className="text-xs text-muted-foreground mb-1">Global Rank</p>
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-bold text-foreground">#{currentUser.globalRank}</span>
-              {getRankChangeIndicator(currentUser.rankChange)}
+      {!(view === "college" && collegeFilter !== "All" && collegeFilter !== currentUser.college) && (
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="glass-card p-4 md:p-5 border-primary/30 bg-primary/5"
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <Star className="w-4 h-4 text-primary" />
+            <span className="text-sm font-semibold text-primary uppercase tracking-wider">Your Position</span>
+          </div>
+          <div className={`grid grid-cols-2 gap-4 ${view === "global" ? "md:grid-cols-6" : "md:grid-cols-5"}`}>
+            {view === "global" && (
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Global Rank</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-bold text-foreground">#{currentUser.globalRank}</span>
+                  {getRankChangeIndicator(currentUser.rankChange)}
+                </div>
+              </div>
+            )}
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">Your College</p>
+              <span className="text-lg font-bold text-foreground">{currentUser.college}</span>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">Rank in {currentUser.college}</p>
+              <span className="text-lg font-bold text-foreground">#{currentUser.collegeRank}</span>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">Solved</p>
+              <span className="text-lg font-bold text-foreground">{currentUser.totalSolved}</span>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">Accuracy</p>
+              <span className="text-lg font-bold text-foreground">{currentUser.accuracy}%</span>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">Score</p>
+              <span className="text-lg font-bold text-primary">{currentUser.score} pts</span>
             </div>
           </div>
-          <div>
-            <p className="text-xs text-muted-foreground mb-1">Your College</p>
-            <span className="text-lg font-bold text-foreground">{currentUser.college}</span>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground mb-1">Rank in {currentUser.college}</p>
-            <span className="text-lg font-bold text-foreground">#{currentUser.collegeRank}</span>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground mb-1">Solved</p>
-            <span className="text-lg font-bold text-foreground">{currentUser.totalSolved}</span>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground mb-1">Accuracy</p>
-            <span className="text-lg font-bold text-foreground">{currentUser.accuracy}%</span>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground mb-1">Score</p>
-            <span className="text-lg font-bold text-primary">{currentUser.score} pts</span>
-          </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      )}
 
       {/* Leaderboard Table */}
       <div className="glass-card overflow-hidden">
