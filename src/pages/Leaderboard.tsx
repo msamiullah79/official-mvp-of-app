@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { useState, useMemo, useEffect } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { leaderboardData, currentUser } from "@/data/mockData";
 import { 
   Trophy, Globe, Building, Users, Search, 
