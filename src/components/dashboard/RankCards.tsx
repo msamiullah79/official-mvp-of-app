@@ -1,11 +1,17 @@
+import { useNavigate } from "react-router-dom";
 import { Trophy, Globe, TrendingUp, TrendingDown } from "lucide-react";
 import { currentUser } from "@/data/mockData";
 
 const RankCards = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {/* College Rank */}
-      <div className="glass-card p-4">
+      <div 
+        className="glass-card p-4 cursor-pointer hover:bg-secondary/50 transition-colors"
+        onClick={() => navigate("/leaderboard?view=college")}
+      >
         <div className="flex items-center gap-2 mb-2">
           <Trophy className="w-4 h-4 text-primary" />
           <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
