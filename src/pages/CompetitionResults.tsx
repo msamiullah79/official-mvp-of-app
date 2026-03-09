@@ -162,9 +162,9 @@ const CompetitionResults = () => {
               >
                 <div className="flex items-center gap-3">
                   <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                    i === 0 ? "bg-yellow-500 text-white" :
-                    i === 1 ? "bg-gray-400 text-white" :
-                    i === 2 ? "bg-amber-600 text-white" :
+                    i === 0 ? "bg-gold text-gold-foreground" :
+                    i === 1 ? "bg-silver text-silver-foreground" :
+                    i === 2 ? "bg-bronze text-bronze-foreground" :
                     "bg-muted text-muted-foreground"
                   }`}>
                     {i + 1}
