@@ -171,7 +171,7 @@ const Leaderboard = () => {
       <div className="flex flex-col sm:flex-row gap-4">
         {/* College Filter - only show when College Ranking is selected */}
         {view === "college" && (
-          <div className="flex gap-2 overflow-x-auto pb-2 flex-1">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:flex gap-2 flex-1">
             {colleges.map(c => (
               <button
                 key={c}
