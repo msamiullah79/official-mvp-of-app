@@ -90,13 +90,7 @@ const SubjectPage = () => {
     navigate(`${basePath}/session?${params.toString()}`);
   };
 
-  const startQuickPractice = () => {
-    const params = new URLSearchParams();
-    params.set("mode", "practice");
-    params.set("count", "10");
-    params.set("randomize", "true");
-    navigate(`${basePath}/session?${params.toString()}`);
-  };
+  // Removed startQuickPractice in favor of subject revision
 
   if (!subject || !mod) {
     return <div className="p-6 text-center text-muted-foreground">Subject not found.</div>;
@@ -161,7 +155,7 @@ const SubjectPage = () => {
         <p className="text-muted-foreground text-sm">{mod.name} · Select topics and configure your session</p>
       </div>
 
-      {/* Quick Practice */}
+      {/* Subject Revision */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -172,12 +166,12 @@ const SubjectPage = () => {
             <Zap className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-foreground">Quick Practice</h3>
-            <p className="text-xs text-muted-foreground">10 random {subject.name} questions</p>
+            <h3 className="text-sm font-semibold text-foreground">Subject Revision</h3>
+            <p className="text-xs text-muted-foreground">Mixed questions from all {subject.name} topics in the {mod.name}.</p>
           </div>
         </div>
         <button
-          onClick={startQuickPractice}
+          onClick={() => navigate(`${basePath}/revision-setup`)}
           className="px-4 py-2 rounded-lg gradient-orange text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
         >
           Start
