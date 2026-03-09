@@ -154,14 +154,12 @@ const MCQSession = () => {
           <ArrowLeft className="w-4 h-4" /> Back
         </button>
         <div className="flex items-center gap-4">
-          {isTimed && (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm">
-              <Clock className="w-4 h-4 text-primary" />
-              <span className={`font-mono font-semibold ${timeLeft < 60 ? "text-destructive" : "text-foreground"}`}>
-                {formatTime(timeLeft)}
-              </span>
-            </div>
-          )}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm">
+            <Clock className="w-4 h-4 text-primary" />
+            <span className={`font-mono font-semibold ${timeLeft < 60 ? "text-destructive" : "text-foreground"}`}>
+              {formatTime(timeLeft)} remaining | Q {currentIndex + 1} / {questions.length}
+            </span>
+          </div>
           <button onClick={endSession} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors">
             <X className="w-4 h-4" /> End
           </button>
