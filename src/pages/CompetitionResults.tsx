@@ -114,7 +114,7 @@ const CompetitionResults = () => {
             <p className="text-xs text-muted-foreground">Incorrect</p>
           </div>
           <div>
-            <p className="text-2xl font-bold text-yellow-500">{resultState.skipped}</p>
+            <p className="text-2xl font-bold text-gold">{resultState.skipped}</p>
             <p className="text-xs text-muted-foreground">Skipped</p>
           </div>
         </div>
