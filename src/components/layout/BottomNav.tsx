@@ -1,11 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, BookOpen, GraduationCap, Trophy, User } from "lucide-react";
+import { LayoutDashboard, BookOpen, GraduationCap, Trophy, User, Medal } from "lucide-react";
 
 const bottomNavItems = [
-  { label: "Home", path: "/", icon: LayoutDashboard },
+  { label: "Dashboard", path: "/", icon: LayoutDashboard },
   { label: "Practice", path: "/practice", icon: BookOpen },
   { label: "Exam", path: "/exam", icon: GraduationCap },
   { label: "Compete", path: "/compete", icon: Trophy },
+  { label: "Leaderboard", path: "/leaderboard", icon: Medal },
   { label: "Profile", path: "/profile", icon: User },
 ];
 
@@ -20,7 +21,8 @@ const BottomNav = () => {
             location.pathname === item.path ||
             (item.path === "/practice" && location.pathname.startsWith("/practice")) ||
             (item.path === "/exam" && location.pathname.startsWith("/exam")) ||
-            (item.path === "/compete" && location.pathname.startsWith("/compete"));
+            (item.path === "/compete" && location.pathname.startsWith("/compete")) ||
+            (item.path === "/leaderboard" && location.pathname.startsWith("/leaderboard"));
 
           return (
             <Link
