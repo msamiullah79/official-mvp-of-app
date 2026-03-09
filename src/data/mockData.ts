@@ -114,7 +114,13 @@ export const generateHeatmapData = () => {
 };
 
 export const catchUpStudents = [
-  { name: "Fatima Khan", username: "fatimakhan", avatar: "", solved: 923, streak: 45, university: "KEMU", accuracy: 89.2 },
+  // KEMU students (user's college)
+  { name: "Fatima Khan", username: "fatimakhan", avatar: "", solved: 455, streak: 45, university: "KEMU", accuracy: 89.2 },
+  { name: "Usman Ali", username: "usmanali", avatar: "", solved: 478, streak: 38, university: "KEMU", accuracy: 86.5 },
+  { name: "Hira Malik", username: "hiramalik", avatar: "", solved: 512, streak: 52, university: "KEMU", accuracy: 91.3 },
+  { name: "Zain Ahmed", username: "zainahmed", avatar: "", solved: 534, streak: 29, university: "KEMU", accuracy: 84.8 },
+  { name: "Ayesha Noor", username: "ayeshanoor", avatar: "", solved: 589, streak: 41, university: "KEMU", accuracy: 88.1 },
+  // Other colleges
   { name: "Ali Hassan", username: "alihassan", avatar: "", solved: 890, streak: 32, university: "Aga Khan", accuracy: 85.6 },
   { name: "Sana Mirza", username: "sanamirza", avatar: "", solved: 856, streak: 28, university: "AIMC", accuracy: 82.1 },
 ];
