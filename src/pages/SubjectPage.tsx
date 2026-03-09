@@ -32,7 +32,7 @@ const SubjectPage = () => {
   const [questionCount, setQuestionCount] = useState<QuestionCount>(10);
   const [customQuestionCount, setCustomQuestionCount] = useState(20);
   const [timeLimitMode, setTimeLimitMode] = useState<TimeLimitMode>("auto");
-  const [customTimeLimit, setCustomTimeLimit] = useState(15);
+  const [customTimeLimit, setCustomTimeLimit] = useState(45); // seconds per question
 
   // Advanced settings
   const [difficulty, setDifficulty] = useState<Difficulty>("mixed");
@@ -45,7 +45,13 @@ const SubjectPage = () => {
   const [lockPreviousQuestions, setLockPreviousQuestions] = useState(false);
 
   const actualCount = questionCount === "custom" ? customQuestionCount : questionCount;
-  const estimatedTime = timeLimitMode === "auto" ? actualCount : customTimeLimit;
+  const estimatedTime = timeLimitMode === "auto" ? actualCount * 60 : customTimeLimit * actualCount;
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}m ${s > 0 ? s + 's' : ''}`.trim();
+  };
 
   const allSelected = selectedTopics.length === topics.length && topics.length > 0;
 
@@ -73,7 +79,7 @@ const SubjectPage = () => {
     const params = new URLSearchParams();
     if (selectedTopics.length > 0) params.set("topics", selectedTopics.join(","));
     params.set("count", String(actualCount));
-    params.set("timeLimit", String(estimatedTime));
+    params.set("timeLimitSecs", String(estimatedTime));
     if (randomize) params.set("randomize", "true");
     if (difficulty !== "mixed") params.set("difficulty", difficulty);
 
@@ -348,20 +354,27 @@ const SubjectPage = () => {
               <div className={`w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center ${timeLimitMode === "custom" ? "border-primary" : "border-muted-foreground/40"}`}>
                 {timeLimitMode === "custom" && <div className="w-2 h-2 rounded-full bg-primary" />}
               </div>
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-foreground">Custom</span>
+              <div className="flex flex-col">
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-medium text-foreground">Custom</span>
+                  {timeLimitMode === "custom" && (
+                    <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
+                      <input
+                        type="number"
+                        min={10}
+                        max={300}
+                        value={customTimeLimit}
+                        onChange={e => setCustomTimeLimit(Number(e.target.value))}
+                        className="w-20 px-3 py-1.5 rounded-lg bg-muted border border-border text-sm text-foreground"
+                      />
+                      <span className="text-xs text-muted-foreground">sec/question</span>
+                    </div>
+                  )}
+                </div>
                 {timeLimitMode === "custom" && (
-                  <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
-                    <input
-                      type="number"
-                      min={1}
-                      max={180}
-                      value={customTimeLimit}
-                      onChange={e => setCustomTimeLimit(Number(e.target.value))}
-                      className="w-20 px-3 py-1.5 rounded-lg bg-muted border border-border text-sm text-foreground"
-                    />
-                    <span className="text-xs text-muted-foreground">minutes</span>
-                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {customTimeLimit} seconds per question · {actualCount} questions → {formatTime(customTimeLimit * actualCount)} total
+                  </p>
                 )}
               </div>
             </button>

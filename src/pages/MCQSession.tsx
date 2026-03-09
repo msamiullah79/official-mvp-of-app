@@ -23,6 +23,7 @@ const MCQSession = () => {
   const showExplanations = searchParams.get("explanations") !== "false";
   const isExamMode = searchParams.get("examMode") === "true";
   const timerMinutes = searchParams.get("timer");
+  const timeLimitSecs = searchParams.get("timeLimitSecs");
   const customCount = searchParams.get("count");
   const randomize = searchParams.get("randomize");
 
@@ -46,21 +47,18 @@ const MCQSession = () => {
   const [marked, setMarked] = useState<Set<string>>(new Set());
   const [showSummary, setShowSummary] = useState(false);
   const [timeLeft, setTimeLeft] = useState(() => {
+    if (timeLimitSecs) return Number(timeLimitSecs);
     if (timerMinutes) return Number(timerMinutes) * 60;
-    if (mode === "timed") return 40 * 60;
-    return 0;
+    return questions.length * 60;
   });
   const [startTime] = useState(Date.now());
   const [endTime, setEndTime] = useState<number | null>(null);
 
-  const isTimed = mode === "timed" || !!timerMinutes;
-
   useEffect(() => {
-    if (!isTimed) return;
     if (timeLeft <= 0) { endSession(); return; }
     const t = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
     return () => clearInterval(t);
-  }, [isTimed, timeLeft]);
+  }, [timeLeft]);
 
   const question = questions[currentIndex];
   const currentResult = results[currentIndex];
@@ -156,14 +154,12 @@ const MCQSession = () => {
           <ArrowLeft className="w-4 h-4" /> Back
         </button>
         <div className="flex items-center gap-4">
-          {isTimed && (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm">
-              <Clock className="w-4 h-4 text-primary" />
-              <span className={`font-mono font-semibold ${timeLeft < 60 ? "text-destructive" : "text-foreground"}`}>
-                {formatTime(timeLeft)}
-              </span>
-            </div>
-          )}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary text-sm">
+            <Clock className="w-4 h-4 text-primary" />
+            <span className={`font-mono font-semibold ${timeLeft < 60 ? "text-destructive" : "text-foreground"}`}>
+              {formatTime(timeLeft)} remaining | Q {currentIndex + 1} / {questions.length}
+            </span>
+          </div>
           <button onClick={endSession} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-destructive transition-colors">
             <X className="w-4 h-4" /> End
           </button>
