@@ -79,7 +79,7 @@ const SubjectPage = () => {
     const params = new URLSearchParams();
     if (selectedTopics.length > 0) params.set("topics", selectedTopics.join(","));
     params.set("count", String(actualCount));
-    params.set("timeLimit", String(estimatedTime));
+    params.set("timeLimitSecs", String(estimatedTime));
     if (randomize) params.set("randomize", "true");
     if (difficulty !== "mixed") params.set("difficulty", difficulty);
 
