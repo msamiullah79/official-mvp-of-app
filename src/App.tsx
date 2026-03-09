@@ -32,6 +32,7 @@ const App = () => (
             <Route path="/practice/:yearSlug" element={<Navigate to="/practice" replace />} />
             <Route path="/practice/:yearSlug/:moduleSlug" element={<BlockPage />} />
             <Route path="/practice/:yearSlug/:moduleSlug/:subjectSlug" element={<SubjectPage />} />
+            <Route path="/practice/:yearSlug/:moduleSlug/:subjectSlug/revision-setup" element={<SubjectRevisionSetup />} />
             <Route path="/practice/:yearSlug/:moduleSlug/:subjectSlug/session" element={<MCQSession />} />
             <Route path="/practice/:yearSlug/:moduleSlug/revision-setup" element={<RevisionSetup />} />
             <Route path="/practice/:yearSlug/:moduleSlug/revision" element={<MCQSession />} />
