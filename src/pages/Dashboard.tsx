@@ -3,7 +3,7 @@ import SubjectProgress from "@/components/dashboard/SubjectProgress";
 import ModuleProgress from "@/components/dashboard/ModuleProgress";
 import RankCards from "@/components/dashboard/RankCards";
 import ProblemsSolved from "@/components/dashboard/ProblemsSolved";
-import ContinuePractice from "@/components/dashboard/ContinuePractice";
+
 import ActivityHeatmap from "@/components/dashboard/ActivityHeatmap";
 import CatchUpPanel from "@/components/dashboard/CatchUpPanel";
 import { Flame } from "lucide-react";
@@ -34,7 +34,7 @@ const Dashboard = () => {
           <div className="space-y-6">
             <RankCards />
             <ProblemsSolved />
-            <ContinuePractice />
+            
             <CatchUpPanel />
             <ActivityHeatmap />
           </div>
