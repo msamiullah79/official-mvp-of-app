@@ -506,7 +506,7 @@ const SubjectPage = () => {
           </div>
           <div className="p-3 rounded-lg bg-secondary/50">
             <span className="text-xs text-muted-foreground">Estimated time</span>
-            <p className="text-sm font-medium text-foreground">{estimatedTime} min</p>
+            <p className="text-sm font-medium text-foreground">{formatEstimatedTime(estimatedTime)}</p>
           </div>
         </div>
       </div>
