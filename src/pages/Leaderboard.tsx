@@ -159,7 +159,10 @@ const Leaderboard = () => {
         </div>
         {view === "college" && (
           <p className="text-sm text-muted-foreground">
-            See where you rank among your peers at <span className="font-medium text-foreground">{collegeFilter === "All" ? "all colleges" : collegeFilter}</span>
+            {collegeFilter === "All" || collegeFilter === currentUser.college
+              ? <>See where you rank among your peers at <span className="font-medium text-foreground">{collegeFilter === "All" ? "all colleges" : currentUser.college}</span></>
+              : <>Viewing leaderboard for <span className="font-medium text-foreground">{collegeFilter}</span></>
+            }
           </p>
         )}
       </div>
