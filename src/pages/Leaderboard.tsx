@@ -159,7 +159,10 @@ const Leaderboard = () => {
         </div>
         {view === "college" && (
           <p className="text-sm text-muted-foreground">
-            See where you rank among your peers at <span className="font-medium text-foreground">{collegeFilter === "All" ? "all colleges" : collegeFilter}</span>
+            {collegeFilter === "All" || collegeFilter === currentUser.college
+              ? <>See where you rank among your peers at <span className="font-medium text-foreground">{collegeFilter === "All" ? "all colleges" : currentUser.college}</span></>
+              : <>Viewing leaderboard for <span className="font-medium text-foreground">{collegeFilter}</span></>
+            }
           </p>
         )}
       </div>
@@ -224,35 +227,22 @@ const Leaderboard = () => {
           <Star className="w-4 h-4 text-primary" />
           <span className="text-sm font-semibold text-primary uppercase tracking-wider">Your Position</span>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          {view === "global" ? (
-            <>
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">Global Rank</p>
-                <div className="flex items-center gap-2">
-                  <span className="text-lg font-bold text-foreground">#{currentUser.globalRank}</span>
-                  {getRankChangeIndicator(currentUser.rankChange)}
-                </div>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">College Rank</p>
-                <span className="text-lg font-bold text-foreground">#{currentUser.collegeRank}</span>
-              </div>
-            </>
-          ) : (
-            <div className="col-span-2 md:col-span-2">
-              <p className="text-xs text-muted-foreground mb-1">
-                Rank in {collegeFilter === "All" ? "All Colleges" : collegeFilter}
-              </p>
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-bold text-foreground">
-                  {currentUserRankInList !== "-" ? `#${currentUserRankInList}` : "-"}
-                </span>
-                {currentUserRankInList !== "-" && getRankChangeIndicator(currentUser.rankChange)}
-              </div>
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+          <div>
+            <p className="text-xs text-muted-foreground mb-1">Global Rank</p>
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-bold text-foreground">#{currentUser.globalRank}</span>
+              {getRankChangeIndicator(currentUser.rankChange)}
             </div>
-          )}
-          
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground mb-1">Your College</p>
+            <span className="text-lg font-bold text-foreground">{currentUser.college}</span>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground mb-1">Rank in {currentUser.college}</p>
+            <span className="text-lg font-bold text-foreground">#{currentUser.collegeRank}</span>
+          </div>
           <div>
             <p className="text-xs text-muted-foreground mb-1">Solved</p>
             <span className="text-lg font-bold text-foreground">{currentUser.totalSolved}</span>
