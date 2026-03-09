@@ -111,55 +111,6 @@ const Leaderboard = () => {
         <p className="text-muted-foreground mt-1">See how you rank against other MBBS students.</p>
       </div>
 
-      {/* Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-        <div className="glass-card p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Globe className="w-4 h-4 text-primary" />
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Global Rank</span>
-          </div>
-          <p className="text-xl md:text-2xl font-bold text-foreground">
-            #{currentUser.globalRank.toLocaleString()}
-            <span className="text-sm font-normal text-muted-foreground ml-1">
-              / {currentUser.globalTotal.toLocaleString()}
-            </span>
-          </p>
-        </div>
-        
-        <div className="glass-card p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Building className="w-4 h-4 text-primary" />
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">College Rank</span>
-          </div>
-          <p className="text-xl md:text-2xl font-bold text-foreground">
-            #{currentUser.collegeRank}
-            <span className="text-sm font-normal text-muted-foreground ml-1">
-              / {currentUser.collegeTotalStudents}
-            </span>
-          </p>
-        </div>
-        
-        <div className="glass-card p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Trophy className="w-4 h-4 text-primary" />
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Your Score</span>
-          </div>
-          <p className="text-xl md:text-2xl font-bold text-foreground">
-            {currentUser.score.toLocaleString()}
-            <span className="text-sm font-normal text-muted-foreground ml-1">pts</span>
-          </p>
-        </div>
-        
-        <div className="glass-card p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Users className="w-4 h-4 text-primary" />
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Students</span>
-          </div>
-          <p className="text-xl md:text-2xl font-bold text-foreground">
-            {currentUser.globalTotal.toLocaleString()}
-          </p>
-        </div>
-      </div>
 
       {/* View Toggle */}
       <div className="flex flex-wrap gap-2">
