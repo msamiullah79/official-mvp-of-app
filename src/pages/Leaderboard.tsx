@@ -260,66 +260,64 @@ const Leaderboard = () => {
 
       {/* Leaderboard Table */}
       <div className="glass-card overflow-hidden">
-        <div className="overflow-x-auto -webkit-overflow-scrolling-touch">
-          <table className="w-full text-sm min-w-[600px]">
-            <thead>
-              <tr className="border-b border-border bg-secondary/30">
-                <th className="text-left p-3 md:p-4 text-muted-foreground font-medium w-20 sticky left-0 bg-secondary/30 z-10">Rank</th>
-                <th className="text-left p-3 md:p-4 text-muted-foreground font-medium sticky left-20 bg-secondary/30 z-10">User</th>
-                <th className="text-left p-3 md:p-4 text-muted-foreground font-medium">College</th>
-                <th className="text-right p-3 md:p-4 text-muted-foreground font-medium">Solved</th>
-                <th className="text-right p-3 md:p-4 text-muted-foreground font-medium">Accuracy</th>
-                <th className="text-right p-3 md:p-4 text-muted-foreground font-medium">Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              <AnimatePresence mode="popLayout">
-                {paginatedData.map((user, i) => (
-                  <motion.tr
-                    key={user.username + user.rank}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ delay: i * 0.02 }}
-                    onClick={() => setSelectedUser(user)}
-                    className={`border-b border-border/50 hover:bg-secondary/50 transition-colors cursor-pointer ${
-                      user.rank <= 3 ? "bg-primary/5" : ""
-                    }`}
-                  >
-                    <td className="p-3 md:p-4 sticky left-0 bg-background z-10">
-                      <div className="flex items-center gap-2">
-                        {getRankIcon(user.rank)}
-                        {getRankChangeIndicator(user.rankChange)}
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border bg-secondary/30">
+              <th className="text-left p-3 md:p-4 text-muted-foreground font-medium w-16 md:w-20">Rank</th>
+              <th className="text-left p-3 md:p-4 text-muted-foreground font-medium">User</th>
+              <th className="text-left p-3 md:p-4 text-muted-foreground font-medium">College</th>
+              <th className="text-right p-3 md:p-4 text-muted-foreground font-medium hidden md:table-cell">Solved</th>
+              <th className="text-right p-3 md:p-4 text-muted-foreground font-medium hidden md:table-cell">Accuracy</th>
+              <th className="text-right p-3 md:p-4 text-muted-foreground font-medium hidden md:table-cell">Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <AnimatePresence mode="popLayout">
+              {paginatedData.map((user, i) => (
+                <motion.tr
+                  key={user.username + user.rank}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ delay: i * 0.02 }}
+                  onClick={() => setSelectedUser(user)}
+                  className={`border-b border-border/50 hover:bg-secondary/50 transition-colors cursor-pointer ${
+                    user.rank <= 3 ? "bg-primary/5" : ""
+                  }`}
+                >
+                  <td className="p-3 md:p-4">
+                    <div className="flex items-center gap-1 md:gap-2">
+                      {getRankIcon(user.rank)}
+                      {getRankChangeIndicator(user.rankChange)}
+                    </div>
+                  </td>
+                  <td className="p-3 md:p-4">
+                    <div className="flex items-center gap-2 md:gap-3">
+                      <div className={`w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+                        user.rank <= 3 
+                          ? "gradient-orange text-primary-foreground" 
+                          : "bg-primary/20 text-primary"
+                      }`}>
+                        {user.name.split(" ").map(n => n[0]).join("")}
                       </div>
-                    </td>
-                    <td className="p-3 md:p-4 sticky left-20 bg-background z-10">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-                          user.rank <= 3 
-                            ? "gradient-orange text-primary-foreground" 
-                            : "bg-primary/20 text-primary"
-                        }`}>
-                          {user.name.split(" ").map(n => n[0]).join("")}
-                        </div>
-                        <div className="min-w-0">
-                          <span className="font-medium text-foreground block truncate">{user.name}</span>
-                        </div>
+                      <div className="min-w-0">
+                        <span className="font-medium text-foreground block truncate text-xs md:text-sm">{user.name}</span>
                       </div>
-                    </td>
-                    <td className="p-3 md:p-4 text-muted-foreground">{user.college}</td>
-                    <td className="p-3 md:p-4 text-right font-mono text-foreground">{user.solved}</td>
-                    <td className="p-3 md:p-4 text-right font-mono text-foreground">{user.accuracy}%</td>
-                    <td className="p-3 md:p-4 text-right">
-                      <span className={`font-bold ${user.rank <= 3 ? "text-primary" : "text-foreground"}`}>
-                        {user.score}
-                      </span>
-                    </td>
-                  </motion.tr>
-                ))}
-              </AnimatePresence>
-            </tbody>
-          </table>
-        </div>
+                    </div>
+                  </td>
+                  <td className="p-3 md:p-4 text-muted-foreground text-xs md:text-sm">{user.college}</td>
+                  <td className="p-3 md:p-4 text-right font-mono text-foreground hidden md:table-cell">{user.solved}</td>
+                  <td className="p-3 md:p-4 text-right font-mono text-foreground hidden md:table-cell">{user.accuracy}%</td>
+                  <td className="p-3 md:p-4 text-right hidden md:table-cell">
+                    <span className={`font-bold ${user.rank <= 3 ? "text-primary" : "text-foreground"}`}>
+                      {user.score}
+                    </span>
+                  </td>
+                </motion.tr>
+              ))}
+            </AnimatePresence>
+          </tbody>
+        </table>
 
         {filtered.length === 0 && (
           <div className="p-8 text-center text-muted-foreground">
