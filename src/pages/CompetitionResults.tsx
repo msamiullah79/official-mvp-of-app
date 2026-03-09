@@ -90,7 +90,7 @@ const CompetitionResults = () => {
           <p className="text-xs text-muted-foreground">Accuracy</p>
         </div>
         <div className="glass-card p-4 text-center">
-          <Clock className="w-6 h-6 text-blue-500 mx-auto mb-2" />
+          <Clock className="w-6 h-6 text-primary mx-auto mb-2" />
           <p className="text-2xl font-bold text-foreground">{formatTime(resultState.timeTaken)}</p>
           <p className="text-xs text-muted-foreground">Time Taken</p>
         </div>
