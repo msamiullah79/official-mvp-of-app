@@ -6,7 +6,12 @@ import { Button } from "@/components/ui/button";
 
 const Profile = () => {
   const { username } = useParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const user = username ? getUserByUsername(username) : currentUser;
+  
+  const fromLeaderboard = searchParams.get("from") === "leaderboard";
+  const rank = searchParams.get("rank");
 
   if (!user) {
     return (
