@@ -431,7 +431,7 @@ const Leaderboard = () => {
                   <span className="text-sm text-muted-foreground">Rank #{selectedUser.rank}</span>
                 </div>
                 <Link 
-                  to={`/profile/${selectedUser.username}`}
+                  to={`/profile/${selectedUser.username}?from=leaderboard&rank=${selectedUser.rank}`}
                   className="text-sm text-primary hover:underline font-medium"
                 >
                   View Full Profile →
