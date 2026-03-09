@@ -53,6 +53,14 @@ const SubjectPage = () => {
     return `${m}m ${s > 0 ? s + 's' : ''}`.trim();
   };
 
+  const formatEstimatedTime = (seconds: number) => {
+    const totalMinutes = Math.round(seconds / 60);
+    if (totalMinutes < 60) return `${totalMinutes} min`;
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    return m > 0 ? `${h} hr ${m} min` : `${h} hr`;
+  };
+
   const allSelected = selectedTopics.length === topics.length && topics.length > 0;
 
   const weakTopics = useMemo(
