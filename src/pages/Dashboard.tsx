@@ -34,7 +34,7 @@ const Dashboard = () => {
           <div className="space-y-6">
             <RankCards />
             <ProblemsSolved />
-            <ContinuePractice />
+            
             <CatchUpPanel />
             <ActivityHeatmap />
           </div>
