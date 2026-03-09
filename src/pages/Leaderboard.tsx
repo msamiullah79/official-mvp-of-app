@@ -54,14 +54,17 @@ const Leaderboard = () => {
   const filtered = useMemo(() => {
     let data = [...leaderboardData];
     
+    // Calculate score using formula: Accuracy × √(Questions Solved)
+    data = data.map(u => ({
+      ...u,
+      score: Math.round(u.accuracy * Math.sqrt(u.solved))
+    }));
+    
     // Filter by view type
     if (view === "college") {
-      data = data.filter(u => u.college === currentUser.college);
-    }
-    
-    // Filter by college
-    if (collegeFilter !== "All") {
-      data = data.filter(u => u.college === collegeFilter);
+      if (collegeFilter !== "All") {
+        data = data.filter(u => u.college === collegeFilter);
+      }
     }
     
     // Filter by search query
@@ -71,9 +74,15 @@ const Leaderboard = () => {
       );
     }
     
+    // Sort descending by score
+    data.sort((a, b) => b.score - a.score);
+    
     // Re-rank after filtering
     return data.map((user, index) => ({ ...user, rank: index + 1 }));
   }, [view, collegeFilter, searchQuery]);
+
+  const currentUserRankInList = filtered.find(u => u.username === currentUser.username)?.rank || 
+    (collegeFilter === currentUser.college ? currentUser.collegeRank : "-");
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginatedData = filtered.slice(
@@ -122,20 +131,27 @@ const Leaderboard = () => {
 
 
       {/* View Toggle */}
-      <div className="flex flex-wrap gap-2">
-        {(["global", "college"] as const).map(v => (
-          <button
-            key={v}
-            onClick={() => { setView(v); setCurrentPage(1); }}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              view === v
-                ? "gradient-orange text-primary-foreground shadow-lg"
-                : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-            }`}
-          >
-            {v === "global" ? "Global Ranking" : "College Ranking"}
-          </button>
-        ))}
+      <div className="space-y-3">
+        <div className="flex flex-wrap gap-2">
+          {(["global", "college"] as const).map(v => (
+            <button
+              key={v}
+              onClick={() => { setView(v); setCurrentPage(1); }}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                view === v
+                  ? "gradient-orange text-primary-foreground shadow-lg"
+                  : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+              }`}
+            >
+              {v === "global" ? "Global Ranking" : "College Ranking"}
+            </button>
+          ))}
+        </div>
+        {view === "college" && (
+          <p className="text-sm text-muted-foreground">
+            See where you rank among your peers at <span className="font-medium text-foreground">{collegeFilter === "All" ? "all colleges" : collegeFilter}</span>
+          </p>
+        )}
       </div>
 
       {/* Filters Row */}
@@ -199,17 +215,34 @@ const Leaderboard = () => {
           <span className="text-sm font-semibold text-primary uppercase tracking-wider">Your Position</span>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <div>
-            <p className="text-xs text-muted-foreground mb-1">Global Rank</p>
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-bold text-foreground">#{currentUser.globalRank}</span>
-              {getRankChangeIndicator(currentUser.rankChange)}
+          {view === "global" ? (
+            <>
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Global Rank</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-bold text-foreground">#{currentUser.globalRank}</span>
+                  {getRankChangeIndicator(currentUser.rankChange)}
+                </div>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">College Rank</p>
+                <span className="text-lg font-bold text-foreground">#{currentUser.collegeRank}</span>
+              </div>
+            </>
+          ) : (
+            <div className="col-span-2 md:col-span-2">
+              <p className="text-xs text-muted-foreground mb-1">
+                Rank in {collegeFilter === "All" ? "All Colleges" : collegeFilter}
+              </p>
+              <div className="flex items-center gap-2">
+                <span className="text-lg font-bold text-foreground">
+                  {currentUserRankInList !== "-" ? `#${currentUserRankInList}` : "-"}
+                </span>
+                {currentUserRankInList !== "-" && getRankChangeIndicator(currentUser.rankChange)}
+              </div>
             </div>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground mb-1">College Rank</p>
-            <span className="text-lg font-bold text-foreground">#{currentUser.collegeRank}</span>
-          </div>
+          )}
+          
           <div>
             <p className="text-xs text-muted-foreground mb-1">Solved</p>
             <span className="text-lg font-bold text-foreground">{currentUser.totalSolved}</span>
