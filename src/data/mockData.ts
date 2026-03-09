@@ -286,17 +286,30 @@ export const sampleMCQs: MCQ[] = [
   },
 ];
 
-export const competitions = [
+export interface Competition {
+  id: string;
+  title: string;
+  description: string;
+  participants: number;
+  deadline: string;
+  status: "active" | "upcoming" | "completed";
+  type: "daily" | "weekly" | "topic";
+  mcqCount: number;
+  timeLimit: number; // in minutes
+  topicFilter?: string[]; // topics to filter MCQs
+}
+
+export const competitions: Competition[] = [
   {
     id: "c1",
     title: "Daily Challenge",
     description: "10 MCQs across all subjects. Leaderboard resets daily.",
     participants: 1234,
-    deadline: "2026-03-08",
-    status: "active" as const,
-    type: "daily" as const,
+    deadline: "2026-03-09",
+    status: "active",
+    type: "daily",
     mcqCount: 10,
-    timeLimit: null,
+    timeLimit: 10,
   },
   {
     id: "c2",
@@ -304,8 +317,8 @@ export const competitions = [
     description: "30 MCQs in 40 minutes. Ranked by score + time.",
     participants: 456,
     deadline: "2026-03-14",
-    status: "active" as const,
-    type: "weekly" as const,
+    status: "active",
+    type: "weekly",
     mcqCount: 30,
     timeLimit: 40,
   },
@@ -315,10 +328,11 @@ export const competitions = [
     description: "Test your cardiovascular knowledge against peers.",
     participants: 189,
     deadline: "2026-03-15",
-    status: "active" as const,
-    type: "topic" as const,
+    status: "active",
+    type: "topic",
     mcqCount: 20,
     timeLimit: 30,
+    topicFilter: ["Cardiovascular"],
   },
   {
     id: "c4",
@@ -326,10 +340,11 @@ export const competitions = [
     description: "Neuroanatomy + Neurophysiology topic battle.",
     participants: 156,
     deadline: "2026-03-20",
-    status: "upcoming" as const,
-    type: "topic" as const,
+    status: "upcoming",
+    type: "topic",
     mcqCount: 25,
     timeLimit: 35,
+    topicFilter: ["Neuroanatomy", "Neurophysiology"],
   },
   {
     id: "c5",
@@ -337,12 +352,48 @@ export const competitions = [
     description: "Speed round: metabolism & enzymes.",
     participants: 312,
     deadline: "2026-03-25",
-    status: "upcoming" as const,
-    type: "topic" as const,
+    status: "upcoming",
+    type: "topic",
     mcqCount: 15,
     timeLimit: 20,
+    topicFilter: ["Carbohydrate Metabolism", "Lipid Metabolism", "Protein Metabolism", "Enzymes"],
   },
 ];
+
+// Competition user state (simulated - would be in database)
+export interface CompetitionUserState {
+  competitionId: string;
+  status: "registered" | "completed";
+  score?: number;
+  accuracy?: number;
+  timeTaken?: number;
+  rank?: number;
+  completedAt?: string;
+}
+
+// Generate mock leaderboard for a competition
+export const generateCompetitionLeaderboard = (competitionId: string, userRank?: number) => {
+  const participants = competitions.find(c => c.id === competitionId)?.participants || 100;
+  const count = Math.min(participants, 50);
+  
+  return Array.from({ length: count }, (_, i) => {
+    const names = ["Fatima Khan", "Ali Hassan", "Sana Mirza", "Usman Ali", "Ayesha Noor", "Bilal Ahmed", "Hira Malik", "Zain Ul Abideen", "Maryam Tariq", "Hassan Shah"];
+    const usernames = names.map(n => n.toLowerCase().replace(/\s+/g, ""));
+    
+    const score = Math.max(50, 200 - i * 3 + Math.floor(Math.random() * 10));
+    const accuracy = Math.max(60, 98 - i * 0.5 + Math.random() * 5);
+    const timeTaken = Math.floor(Math.random() * 600) + 300; // 5-15 minutes
+    
+    return {
+      rank: i + 1,
+      name: names[i % names.length],
+      username: usernames[i % usernames.length] + (i >= names.length ? i.toString() : ""),
+      score,
+      accuracy: Math.round(accuracy * 10) / 10,
+      timeTaken,
+    };
+  }).sort((a, b) => b.score - a.score || a.timeTaken - b.timeTaken).map((u, i) => ({ ...u, rank: i + 1 }));
+};
 
 export const getUserByUsername = (username: string) => {
   if (username === currentUser.username) return currentUser;
