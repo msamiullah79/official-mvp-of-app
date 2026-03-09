@@ -426,10 +426,10 @@ const Leaderboard = () => {
                 </div>
                 <div className="bg-secondary/50 rounded-lg p-3">
                   <div className="flex items-center gap-2 mb-1">
-                    <Star className="w-4 h-4 text-primary" />
-                    <span className="text-xs text-muted-foreground">Top Subject</span>
+                    <Building className="w-4 h-4 text-primary" />
+                    <span className="text-xs text-muted-foreground">College Rank</span>
                   </div>
-                  <span className="text-lg font-bold text-foreground">{selectedUser.topSubject}</span>
+                  <span className="text-lg font-bold text-foreground">#{collegeRanks[selectedUser.username] || "-"}</span>
                 </div>
               </div>
               
