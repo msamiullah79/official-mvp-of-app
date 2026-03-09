@@ -1,11 +1,17 @@
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { currentUser, subjects, getUserByUsername } from "@/data/mockData";
-import { MapPin, GraduationCap, Building, Trophy, Globe, Flame, Target } from "lucide-react";
+import { MapPin, GraduationCap, Building, Trophy, Globe, Flame, Target, ArrowLeft } from "lucide-react";
 import ActivityHeatmap from "@/components/dashboard/ActivityHeatmap";
+import { Button } from "@/components/ui/button";
 
 const Profile = () => {
   const { username } = useParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const user = username ? getUserByUsername(username) : currentUser;
+  
+  const fromLeaderboard = searchParams.get("from") === "leaderboard";
+  const rank = searchParams.get("rank");
 
   if (!user) {
     return (
@@ -20,6 +26,28 @@ const Profile = () => {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
+      {/* Back Navigation */}
+      {fromLeaderboard && (
+        <Button
+          variant="ghost"
+          onClick={() => navigate("/leaderboard")}
+          className="mb-4 -ml-2 text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Leaderboard
+        </Button>
+      )}
+      
+      {/* Rank Context */}
+      {fromLeaderboard && rank && (
+        <div className="glass-card p-3 mb-4 border-primary/30 bg-primary/5">
+          <p className="text-sm text-muted-foreground">
+            Viewing profile from <span className="font-semibold text-primary">Global Leaderboard</span>
+            {" · "}Rank <span className="font-bold text-foreground">#{rank}</span>
+          </p>
+        </div>
+      )}
+      
       {/* Profile Header */}
       <div className="glass-card p-8 mb-6">
         <div className="flex flex-col sm:flex-row items-start gap-6">
