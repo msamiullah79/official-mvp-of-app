@@ -54,14 +54,17 @@ const Leaderboard = () => {
   const filtered = useMemo(() => {
     let data = [...leaderboardData];
     
+    // Calculate score using formula: Accuracy × √(Questions Solved)
+    data = data.map(u => ({
+      ...u,
+      score: Math.round(u.accuracy * Math.sqrt(u.solved))
+    }));
+    
     // Filter by view type
     if (view === "college") {
-      data = data.filter(u => u.college === currentUser.college);
-    }
-    
-    // Filter by college
-    if (collegeFilter !== "All") {
-      data = data.filter(u => u.college === collegeFilter);
+      if (collegeFilter !== "All") {
+        data = data.filter(u => u.college === collegeFilter);
+      }
     }
     
     // Filter by search query
@@ -71,9 +74,15 @@ const Leaderboard = () => {
       );
     }
     
+    // Sort descending by score
+    data.sort((a, b) => b.score - a.score);
+    
     // Re-rank after filtering
     return data.map((user, index) => ({ ...user, rank: index + 1 }));
   }, [view, collegeFilter, searchQuery]);
+
+  const currentUserRankInList = filtered.find(u => u.username === currentUser.username)?.rank || 
+    (collegeFilter === currentUser.college ? currentUser.collegeRank : "-");
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginatedData = filtered.slice(
