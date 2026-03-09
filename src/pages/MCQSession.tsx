@@ -47,21 +47,18 @@ const MCQSession = () => {
   const [marked, setMarked] = useState<Set<string>>(new Set());
   const [showSummary, setShowSummary] = useState(false);
   const [timeLeft, setTimeLeft] = useState(() => {
+    if (timeLimitSecs) return Number(timeLimitSecs);
     if (timerMinutes) return Number(timerMinutes) * 60;
-    if (mode === "timed") return 40 * 60;
-    return 0;
+    return questions.length * 60;
   });
   const [startTime] = useState(Date.now());
   const [endTime, setEndTime] = useState<number | null>(null);
 
-  const isTimed = mode === "timed" || !!timerMinutes;
-
   useEffect(() => {
-    if (!isTimed) return;
     if (timeLeft <= 0) { endSession(); return; }
     const t = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
     return () => clearInterval(t);
-  }, [isTimed, timeLeft]);
+  }, [timeLeft]);
 
   const question = questions[currentIndex];
   const currentResult = results[currentIndex];
