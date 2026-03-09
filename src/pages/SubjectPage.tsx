@@ -90,13 +90,7 @@ const SubjectPage = () => {
     navigate(`${basePath}/session?${params.toString()}`);
   };
 
-  const startQuickPractice = () => {
-    const params = new URLSearchParams();
-    params.set("mode", "practice");
-    params.set("count", "10");
-    params.set("randomize", "true");
-    navigate(`${basePath}/session?${params.toString()}`);
-  };
+  // Removed startQuickPractice in favor of subject revision
 
   if (!subject || !mod) {
     return <div className="p-6 text-center text-muted-foreground">Subject not found.</div>;
