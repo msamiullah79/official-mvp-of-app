@@ -80,7 +80,7 @@ const CompetitionResults = () => {
           <p className="text-xs text-muted-foreground">Your Rank</p>
         </div>
         <div className="glass-card p-4 text-center">
-          <Trophy className="w-6 h-6 text-yellow-500 mx-auto mb-2" />
+          <Trophy className="w-6 h-6 text-gold mx-auto mb-2" />
           <p className="text-2xl font-bold text-foreground">{resultState.score}</p>
           <p className="text-xs text-muted-foreground">Score</p>
         </div>
