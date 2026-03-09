@@ -1,7 +1,8 @@
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { currentUser, subjects, getUserByUsername } from "@/data/mockData";
-import { MapPin, GraduationCap, Building, Trophy, Globe, Flame, Target } from "lucide-react";
+import { MapPin, GraduationCap, Building, Trophy, Globe, Flame, Target, ArrowLeft } from "lucide-react";
 import ActivityHeatmap from "@/components/dashboard/ActivityHeatmap";
+import { Button } from "@/components/ui/button";
 
 const Profile = () => {
   const { username } = useParams();
