@@ -23,6 +23,7 @@ const MCQSession = () => {
   const showExplanations = searchParams.get("explanations") !== "false";
   const isExamMode = searchParams.get("examMode") === "true";
   const timerMinutes = searchParams.get("timer");
+  const timeLimitSecs = searchParams.get("timeLimitSecs");
   const customCount = searchParams.get("count");
   const randomize = searchParams.get("randomize");
 
