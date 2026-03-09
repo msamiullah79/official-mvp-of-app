@@ -45,7 +45,13 @@ const SubjectPage = () => {
   const [lockPreviousQuestions, setLockPreviousQuestions] = useState(false);
 
   const actualCount = questionCount === "custom" ? customQuestionCount : questionCount;
-  const estimatedTime = timeLimitMode === "auto" ? actualCount : customTimeLimit;
+  const estimatedTime = timeLimitMode === "auto" ? actualCount * 60 : customTimeLimit * actualCount;
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}m ${s > 0 ? s + 's' : ''}`.trim();
+  };
 
   const allSelected = selectedTopics.length === topics.length && topics.length > 0;
 
