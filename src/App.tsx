@@ -12,6 +12,8 @@ import MCQSession from "@/pages/MCQSession";
 import Leaderboard from "@/pages/Leaderboard";
 import Profile from "@/pages/Profile";
 import Compete from "@/pages/Compete";
+import CompetitionSession from "@/pages/CompetitionSession";
+import CompetitionResults from "@/pages/CompetitionResults";
 import ExamMode from "@/pages/ExamMode";
 import RevisionSetup from "@/pages/RevisionSetup";
 import SubjectRevisionSetup from "@/pages/SubjectRevisionSetup";
@@ -40,6 +42,8 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/profile/:username" element={<Profile />} />
             <Route path="/compete" element={<Compete />} />
+            <Route path="/compete/:competitionId/session" element={<CompetitionSession />} />
+            <Route path="/compete/:competitionId/results" element={<CompetitionResults />} />
             <Route path="/exam" element={<ExamMode />} />
           </Route>
           <Route path="*" element={<NotFound />} />
