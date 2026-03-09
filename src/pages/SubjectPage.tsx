@@ -81,6 +81,18 @@ const SubjectPage = () => {
   const selectWeak = () => setSelectedTopics(weakTopics);
   const selectUnsolved = () => setSelectedTopics(unsolvedTopics);
 
+  const getSelectedTopicsDisplay = () => {
+    if (selectedTopics.length === 0 || selectedTopics.length === topics.length) return "All";
+    
+    const selectedNames = selectedTopics
+      .map(slug => topics.find(t => t.slug === slug)?.name)
+      .filter(Boolean);
+      
+    if (selectedNames.length <= 3) return selectedNames.join(", ");
+    
+    return `${selectedNames.slice(0, 2).join(", ")} +${selectedNames.length - 2} more`;
+  };
+
   const basePath = `/practice/${yearSlug}/${moduleSlug}/${subjectSlug}`;
 
   const startSession = () => {
@@ -494,7 +506,7 @@ const SubjectPage = () => {
         <div className="grid grid-cols-2 gap-3">
           <div className="p-3 rounded-lg bg-secondary/50">
             <span className="text-xs text-muted-foreground">Topics</span>
-            <p className="text-sm font-medium text-foreground">{selectedTopics.length || "All"}</p>
+            <p className="text-sm font-medium text-foreground truncate" title={getSelectedTopicsDisplay()}>{getSelectedTopicsDisplay()}</p>
           </div>
           <div className="p-3 rounded-lg bg-secondary/50">
             <span className="text-xs text-muted-foreground">Questions</span>
