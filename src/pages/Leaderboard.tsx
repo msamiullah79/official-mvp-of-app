@@ -35,8 +35,17 @@ interface LeaderboardUser {
 }
 
 const Leaderboard = () => {
-  const [view, setView] = useState<"global" | "college">("global");
+  const [searchParams] = useSearchParams();
+  const initialView = searchParams.get("view") === "college" ? "college" : "global";
+  const [view, setView] = useState<"global" | "college">(initialView);
   const [collegeFilter, setCollegeFilter] = useState("All");
+
+  useEffect(() => {
+    const viewParam = searchParams.get("view");
+    if (viewParam === "college" || viewParam === "global") {
+      setView(viewParam);
+    }
+  }, [searchParams]);
   const [timeFilter, setTimeFilter] = useState("All Time");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);

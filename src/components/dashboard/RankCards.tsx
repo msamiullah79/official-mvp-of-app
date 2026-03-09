@@ -38,7 +38,10 @@ const RankCards = () => {
       </div>
 
       {/* Global Rank */}
-      <div className="glass-card p-4">
+      <div 
+        className="glass-card p-4 cursor-pointer hover:bg-secondary/50 transition-colors"
+        onClick={() => navigate("/leaderboard?view=global")}
+      >
         <div className="flex items-center gap-2 mb-2">
           <Globe className="w-4 h-4 text-primary" />
           <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
