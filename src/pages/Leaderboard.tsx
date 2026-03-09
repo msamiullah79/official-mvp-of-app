@@ -270,15 +270,15 @@ const Leaderboard = () => {
 
       {/* Leaderboard Table */}
       <div className="glass-card overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+        <div className="overflow-x-auto -webkit-overflow-scrolling-touch">
+          <table className="w-full text-sm min-w-[600px]">
             <thead>
               <tr className="border-b border-border bg-secondary/30">
-                <th className="text-left p-3 md:p-4 text-muted-foreground font-medium w-20">Rank</th>
-                <th className="text-left p-3 md:p-4 text-muted-foreground font-medium">User</th>
-                <th className="text-left p-3 md:p-4 text-muted-foreground font-medium hidden md:table-cell">College</th>
+                <th className="text-left p-3 md:p-4 text-muted-foreground font-medium w-20 sticky left-0 bg-secondary/30 z-10">Rank</th>
+                <th className="text-left p-3 md:p-4 text-muted-foreground font-medium sticky left-20 bg-secondary/30 z-10">User</th>
+                <th className="text-left p-3 md:p-4 text-muted-foreground font-medium">College</th>
                 <th className="text-right p-3 md:p-4 text-muted-foreground font-medium">Solved</th>
-                <th className="text-right p-3 md:p-4 text-muted-foreground font-medium hidden sm:table-cell">Accuracy</th>
+                <th className="text-right p-3 md:p-4 text-muted-foreground font-medium">Accuracy</th>
                 <th className="text-right p-3 md:p-4 text-muted-foreground font-medium">Score</th>
               </tr>
             </thead>
@@ -296,13 +296,13 @@ const Leaderboard = () => {
                       user.rank <= 3 ? "bg-primary/5" : ""
                     }`}
                   >
-                    <td className="p-3 md:p-4">
+                    <td className="p-3 md:p-4 sticky left-0 bg-background z-10">
                       <div className="flex items-center gap-2">
                         {getRankIcon(user.rank)}
                         {getRankChangeIndicator(user.rankChange)}
                       </div>
                     </td>
-                    <td className="p-3 md:p-4">
+                    <td className="p-3 md:p-4 sticky left-20 bg-background z-10">
                       <div className="flex items-center gap-3">
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
                           user.rank <= 3 
@@ -313,13 +313,12 @@ const Leaderboard = () => {
                         </div>
                         <div className="min-w-0">
                           <span className="font-medium text-foreground block truncate">{user.name}</span>
-                          <span className="text-xs text-muted-foreground md:hidden">{user.college}</span>
                         </div>
                       </div>
                     </td>
-                    <td className="p-3 md:p-4 text-muted-foreground hidden md:table-cell">{user.college}</td>
+                    <td className="p-3 md:p-4 text-muted-foreground">{user.college}</td>
                     <td className="p-3 md:p-4 text-right font-mono text-foreground">{user.solved}</td>
-                    <td className="p-3 md:p-4 text-right font-mono text-foreground hidden sm:table-cell">{user.accuracy}%</td>
+                    <td className="p-3 md:p-4 text-right font-mono text-foreground">{user.accuracy}%</td>
                     <td className="p-3 md:p-4 text-right">
                       <span className={`font-bold ${user.rank <= 3 ? "text-primary" : "text-foreground"}`}>
                         {user.score}
