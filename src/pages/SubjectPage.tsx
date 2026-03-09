@@ -32,7 +32,7 @@ const SubjectPage = () => {
   const [questionCount, setQuestionCount] = useState<QuestionCount>(10);
   const [customQuestionCount, setCustomQuestionCount] = useState(20);
   const [timeLimitMode, setTimeLimitMode] = useState<TimeLimitMode>("auto");
-  const [customTimeLimit, setCustomTimeLimit] = useState(15);
+  const [customTimeLimit, setCustomTimeLimit] = useState(45); // seconds per question
 
   // Advanced settings
   const [difficulty, setDifficulty] = useState<Difficulty>("mixed");
