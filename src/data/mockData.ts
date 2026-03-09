@@ -5,11 +5,12 @@ export const currentUser = {
   avatar: "",
   year: "1st Year MBBS",
   university: "King Edward Medical University",
+  college: "KEMU",
   location: "Lahore, Pakistan",
   bio: "Aspiring cardiologist passionate about evidence-based medicine.",
-  totalSolved: 154,
+  totalSolved: 420,
   totalAvailable: 480,
-  accuracy: 78.5,
+  accuracy: 88,
   globalRank: 1247,
   globalTotal: 12500,
   collegeRank: 12,
@@ -17,6 +18,8 @@ export const currentUser = {
   rankChange: 3,
   streak: 23,
   percentile: 85,
+  score: Math.round(88 * Math.sqrt(420)), // Score = Accuracy × √(Questions Solved)
+  topSubject: "Physiology",
 };
 
 export interface SubjectData {
@@ -116,7 +119,9 @@ export const catchUpStudents = [
   { name: "Sana Mirza", username: "sanamirza", avatar: "", solved: 856, streak: 28, university: "AIMC", accuracy: 82.1 },
 ];
 
-export const leaderboardData = Array.from({ length: 30 }, (_, i) => {
+const topSubjects = ["Anatomy", "Physiology", "Biochemistry", "Pathology", "Pharmacology"];
+
+export const leaderboardData = Array.from({ length: 100 }, (_, i) => {
   const names = [
     "Fatima Khan", "Ali Hassan", "Sana Mirza", "Usman Ali", "Ayesha Noor",
     "Bilal Ahmed", "Hira Malik", "Zain Ul Abideen", "Maryam Tariq", "Hassan Shah",
@@ -124,26 +129,41 @@ export const leaderboardData = Array.from({ length: 30 }, (_, i) => {
     "Imran Hussain", "Zunaira Siddiqui", "Talha Mehmood", "Amina Bibi", "Faisal Hayat",
     "Sadia Akhtar", "Waqas Anwar", "Mahira Khan", "Rizwan Ahmed", "Lubna Pervez",
     "Adnan Malik", "Bushra Rehman", "Shahid Iqbal", "Nazia Parveen", "Umar Farooq",
+    "Asma Khalid", "Junaid Rauf", "Huma Batool", "Qasim Zia", "Saima Akram",
+    "Kashif Nawaz", "Mehwish Hayat", "Yasir Abbas", "Rubina Khan", "Farhan Saeed",
+    "Alina Shah", "Arslan Tariq", "Samina Pervez", "Owais Ahmed", "Nimra Qureshi",
+    "Danish Malik", "Zara Noor", "Hamza Ali", "Bushra Malik", "Irfan Javed",
+    "Sidra Batool", "Mohsin Raza", "Kiran Shahid", "Bilal Tariq", "Ayesha Rafiq",
+    "Sajid Hussain", "Faiza Noor", "Waqar Ahmed", "Sobia Khan", "Naveed Iqbal",
+    "Hina Parveen", "Asad Ali", "Rida Fatima", "Jawad Malik", "Samra Khan",
+    "Zahid Hussain", "Anam Zahra", "Usman Ghani", "Fozia Bibi", "Shahbaz Khan",
+    "Noor Fatima", "Atif Aslam", "Sana Javed", "Hamid Raza", "Sidra Nawaz",
+    "Imran Khan", "Saira Malik", "Waseem Abbas", "Huma Khan", "Faizan Ahmed",
+    "Maria Tariq", "Arif Hussain", "Sadia Khan", "Asim Ali", "Bushra Ahmed",
+    "Tariq Mehmood", "Rukhsar Bibi", "Nadeem Shah", "Afshan Khalid", "Rizwan Khan",
+    "Sanam Baloch", "Umair Javed", "Neha Rajput", "Salman Raza", "Aisha Noor",
+    "Bilal Khan", "Hira Shah", "Kamran Ali", "Sara Ahmed", "Zubair Malik",
   ];
   const usernames = names.map(n => n.toLowerCase().replace(/\s+/g, ""));
-  const colleges = [
-    "KEMU", "Aga Khan", "AIMC", "KEMU", "Dow Medical",
-    "KEMU", "AIMC", "Aga Khan", "KEMU", "Dow Medical",
-    "AIMC", "KEMU", "Aga Khan", "KEMU", "Dow Medical",
-    "AIMC", "KEMU", "Aga Khan", "Dow Medical", "KEMU",
-    "AIMC", "Aga Khan", "KEMU", "Dow Medical", "AIMC",
-    "KEMU", "Aga Khan", "AIMC", "Dow Medical", "KEMU",
-  ];
+  const colleges = ["KEMU", "Aga Khan", "AIMC", "Dow Medical", "King Edward"];
+  
+  const solved = Math.max(100, 980 - i * 8 + Math.floor(Math.random() * 20));
+  const accuracy = Math.max(65, 95 - i * 0.25 + Math.random() * 3);
+  const score = Math.round(accuracy * Math.sqrt(solved));
+  const rankChange = Math.floor(Math.random() * 7) - 3; // -3 to +3
+
   return {
     rank: i + 1,
-    name: names[i],
-    username: usernames[i],
-    college: colleges[i],
-    solved: 980 - i * 28,
-    accuracy: Math.max(65, 95 - i * 0.8),
-    streak: Math.max(1, 50 - i),
+    name: names[i % names.length],
+    username: usernames[i % usernames.length] + (i >= names.length ? i.toString() : ""),
+    college: colleges[i % colleges.length],
+    solved,
+    accuracy: Math.round(accuracy * 10) / 10,
+    score,
+    rankChange,
+    topSubject: topSubjects[i % topSubjects.length],
   };
-});
+}).sort((a, b) => b.score - a.score).map((user, i) => ({ ...user, rank: i + 1 }));
 
 export interface MCQ {
   id: string;
@@ -369,8 +389,8 @@ export const getUserByUsername = (username: string) => {
       globalTotal: 12500,
       collegeRank: Math.floor(Math.random() * 50) + 1,
       collegeTotalStudents: 180,
-      rankChange: Math.floor(Math.random() * 10) - 3,
-      streak: lb.streak,
+      rankChange: lb.rankChange,
+      streak: Math.max(1, 50 - lb.rank),
       percentile: Math.max(5, 100 - lb.rank * 0.5),
     };
   }
