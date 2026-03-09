@@ -51,35 +51,45 @@ const Leaderboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedUser, setSelectedUser] = useState<LeaderboardUser | null>(null);
 
-  const filtered = useMemo(() => {
-    let data = [...leaderboardData];
-    
-    // Calculate score using formula: Accuracy × √(Questions Solved)
-    data = data.map(u => ({
+  // Pre-compute all users with scores
+  const allWithScores = useMemo(() => {
+    return leaderboardData.map(u => ({
       ...u,
       score: Math.round(u.accuracy * Math.sqrt(u.solved))
     }));
+  }, []);
+
+  // Compute college ranks for all users (rank within their own college)
+  const collegeRanks = useMemo(() => {
+    const byCollege: Record<string, typeof allWithScores> = {};
+    allWithScores.forEach(u => {
+      if (!byCollege[u.college]) byCollege[u.college] = [];
+      byCollege[u.college].push(u);
+    });
+    const ranks: Record<string, number> = {};
+    Object.values(byCollege).forEach(group => {
+      group.sort((a, b) => b.score - a.score);
+      group.forEach((u, i) => { ranks[u.username] = i + 1; });
+    });
+    return ranks;
+  }, [allWithScores]);
+
+  const filtered = useMemo(() => {
+    let data = [...allWithScores];
     
-    // Filter by view type
-    if (view === "college") {
-      if (collegeFilter !== "All") {
-        data = data.filter(u => u.college === collegeFilter);
-      }
+    if (view === "college" && collegeFilter !== "All") {
+      data = data.filter(u => u.college === collegeFilter);
     }
     
-    // Filter by search query
     if (searchQuery.trim()) {
       data = data.filter(u => 
         u.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
     
-    // Sort descending by score
     data.sort((a, b) => b.score - a.score);
-    
-    // Re-rank after filtering
     return data.map((user, index) => ({ ...user, rank: index + 1 }));
-  }, [view, collegeFilter, searchQuery]);
+  }, [view, collegeFilter, searchQuery, allWithScores]);
 
   const currentUserRankInList = filtered.find(u => u.username === currentUser.username)?.rank || 
     (collegeFilter === currentUser.college ? currentUser.collegeRank : "-");
