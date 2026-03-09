@@ -131,22 +131,24 @@ const Leaderboard = () => {
 
       {/* Filters Row */}
       <div className="flex flex-col sm:flex-row gap-4">
-        {/* College Filter */}
-        <div className="flex gap-2 overflow-x-auto pb-2 flex-1">
-          {colleges.map(c => (
-            <button
-              key={c}
-              onClick={() => { setCollegeFilter(c); setCurrentPage(1); }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
-                collegeFilter === c
-                  ? "bg-primary/20 text-primary border border-primary/30"
-                  : "bg-secondary/50 text-muted-foreground hover:bg-secondary"
-              }`}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
+        {/* College Filter - only show when College Ranking is selected */}
+        {view === "college" && (
+          <div className="flex gap-2 overflow-x-auto pb-2 flex-1">
+            {colleges.map(c => (
+              <button
+                key={c}
+                onClick={() => { setCollegeFilter(c); setCurrentPage(1); }}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+                  collegeFilter === c
+                    ? "bg-primary/20 text-primary border border-primary/30"
+                    : "bg-secondary/50 text-muted-foreground hover:bg-secondary"
+                }`}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Time Filter */}
         <div className="flex gap-2">
