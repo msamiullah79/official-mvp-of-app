@@ -131,20 +131,27 @@ const Leaderboard = () => {
 
 
       {/* View Toggle */}
-      <div className="flex flex-wrap gap-2">
-        {(["global", "college"] as const).map(v => (
-          <button
-            key={v}
-            onClick={() => { setView(v); setCurrentPage(1); }}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              view === v
-                ? "gradient-orange text-primary-foreground shadow-lg"
-                : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-            }`}
-          >
-            {v === "global" ? "Global Ranking" : "College Ranking"}
-          </button>
-        ))}
+      <div className="space-y-3">
+        <div className="flex flex-wrap gap-2">
+          {(["global", "college"] as const).map(v => (
+            <button
+              key={v}
+              onClick={() => { setView(v); setCurrentPage(1); }}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                view === v
+                  ? "gradient-orange text-primary-foreground shadow-lg"
+                  : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+              }`}
+            >
+              {v === "global" ? "Global Ranking" : "College Ranking"}
+            </button>
+          ))}
+        </div>
+        {view === "college" && (
+          <p className="text-sm text-muted-foreground">
+            See where you rank among your peers at <span className="font-medium text-foreground">{collegeFilter === "All" ? "all colleges" : collegeFilter}</span>
+          </p>
+        )}
       </div>
 
       {/* Filters Row */}
